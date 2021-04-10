@@ -1,15 +1,17 @@
 package com.wa2.demo.controllers
 
-import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
+import com.wa2.demo.dto.TransactionDTO
+import com.wa2.demo.services.TransactionService
+import org.springframework.beans.factory.annotation.Autowired
 
-@Controller
-class WalletController {
+import org.springframework.web.bind.annotation.*
+
+@RestController
+@RequestMapping("/wallet")
+class WalletController(val transactionService: TransactionService) {
 
     @PostMapping("/wallet")
-    fun createWallet(){
+    fun createWallet() {
 
         //TODO create Wallet
         println("Creating wallet...")
@@ -18,16 +20,12 @@ class WalletController {
     }
 
 
-
-    @GetMapping("/wallet/{walletId}/transaction")
-    fun createTransaction(@PathVariable walletId: Long) {
-        //TODO
-        println("Got the message!")
+    @PostMapping("/{walletId}/transaction")
+    fun createTransaction(@PathVariable walletId: Long, @RequestBody transactionDTO: TransactionDTO) {
+        // TODO get Transaction and pass it to Transaction Service
+//        println("amount: $transactionDTO")
+//        transactionService.createTransaction(transactionDTO)
     }
-
-
-
-
 
 
 }
