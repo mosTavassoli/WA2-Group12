@@ -3,6 +3,8 @@ package com.wa2.demo.controllers
 import com.wa2.demo.dto.TransactionDTO
 import com.wa2.demo.services.TransactionService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 
 import org.springframework.web.bind.annotation.*
 
@@ -10,11 +12,14 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/wallet")
 class WalletController(val transactionService: TransactionService) {
 
-    @PostMapping("/wallet")
-    fun createWallet() {
+    @PostMapping()
+    fun createWallet(): ResponseEntity<String> {
 
-        //TODO create Wallet
+        //TODO connect service
         println("Creating wallet...")
+
+
+        return ResponseEntity<String>("Wallet created!", HttpStatus.CREATED)
 
 
     }
