@@ -28,7 +28,7 @@ import javax.persistence.*
 @Entity
 class Transaction(
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     var transactionId: Long? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)

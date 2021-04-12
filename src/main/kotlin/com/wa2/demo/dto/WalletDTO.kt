@@ -1,10 +1,22 @@
+
 package com.wa2.demo.dto
+
+import com.wa2.demo.entities.Wallet
 
 
 data class WalletDTO(
-    var walletId: Long,
-    var customer: CustomerDTO,
-    var currentAmount: Long,
-    var payeeId: MutableSet<TransactionDTO> = mutableSetOf<TransactionDTO>() ,
-    var payerId: MutableSet<TransactionDTO> = mutableSetOf<TransactionDTO>()
-)
+    var walletId: Long? = null,
+    var customer: CustomerDTO?= null,
+    var currentAmount: Long?= null,
+//    var payeeId: MutableSet<TransactionDTO>? = null ,
+//    var payerId: MutableSet<TransactionDTO> = mutableSetOf<TransactionDTO>()
+){
+    fun toWalletEntity(): Wallet = Wallet(
+        walletId,
+        customer?.toCustomerEntity(),
+        currentAmount,
+        )
+}
+fun Wallet.toWalletDTO():WalletDTO = WalletDTO (
+            walletId,customer?.toCustomerDTO(),currentAmount
+        )

@@ -1,3 +1,4 @@
+
 package com.wa2.demo.dto
 
 import com.wa2.demo.entities.Transaction
@@ -11,5 +12,11 @@ data class TransactionDTO(
     var amount: Long
 ) {
     // TODO Create extension Function , toTransaction
-//    fun toTransaction():Transaction = Transaction()
+    fun toTransactionEntity():Transaction = Transaction(
+        transactionId,
+        payee.toWalletEntity(),
+        payer.toWalletEntity(),
+        dateTime,
+        amount
+    )
 }

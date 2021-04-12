@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 class WalletServiceImpl (val walletRepository: WalletRepository): WalletService {
 
     override fun addNewWallet(walletDTO: WalletDTO) : WalletDTO{
-       val wallet : Wallet =  walletRepository.findByWalletId(walletDTO.walletId)
+       val wallet : Wallet =  walletRepository.findByWalletId(walletDTO.walletId!!)
         //TODO
         return walletDTO
     }

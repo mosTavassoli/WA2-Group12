@@ -4,9 +4,11 @@ import com.wa2.demo.dto.TransactionDTO
 import com.wa2.demo.services.TransactionService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 
 import org.springframework.web.bind.annotation.*
+import java.math.BigDecimal
 
 @RestController
 @RequestMapping("/wallet")
@@ -25,12 +27,11 @@ class WalletController(val transactionService: TransactionService) {
     }
 
 
-    @PostMapping("/{walletId}/transaction")
+    @PostMapping("/{walletId}/transaction",MediaType.APPLICATION_JSON_VALUE)
     fun createTransaction(@PathVariable walletId: Long, @RequestBody transactionDTO: TransactionDTO) {
-        // TODO get Transaction and pass it to Transaction Service
-//        println("amount: $transactionDTO")
-//        transactionService.createTransaction(transactionDTO)
+        transactionService.createTransaction(transactionDTO)
+//        println("amount: ${body["amount"]}")
     }
-
-
 }
+
+//@RequestBody body: Map<String, BigDecimal>
