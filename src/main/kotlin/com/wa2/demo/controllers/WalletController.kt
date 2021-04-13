@@ -35,7 +35,7 @@ class WalletController(val transactionService: TransactionService) {
         val payee = WalletDTO(
             walletId
         )
-        val transactionDTO = TransactionDTO(
+        val transactionDTO : TransactionDTO = TransactionDTO(
             null,
             payee,
             payer,

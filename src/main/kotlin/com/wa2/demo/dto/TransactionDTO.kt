@@ -6,16 +6,16 @@ import java.util.*
 
 data class TransactionDTO(
     var transactionId: Long? = null,
-    var payeeWalletId: WalletDTO? = null,
-    var payerWalletId: WalletDTO? = null,
+    var payee: WalletDTO? = null,
+    var payer: WalletDTO? = null,
     var dateTime: Date? = null,
     var amount: BigDecimal? = null
 ) {
     // TODO Create extension Function , toTransaction
     fun toTransactionEntity(): Transaction = Transaction(
         transactionId,
-        payeeWalletId?.toWalletEntity(),
-        payerWalletId?.toWalletEntity(),
+        payee?.toWalletEntity(),
+        payee?.toWalletEntity(),
         dateTime,
         amount
     )

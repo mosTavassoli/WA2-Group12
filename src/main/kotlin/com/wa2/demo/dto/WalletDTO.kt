@@ -7,8 +7,8 @@ data class WalletDTO(
     var walletId: Long? = null,
     var customer: CustomerDTO? = null,
     var currentAmount: Long? = null,
-    var payeeWalletId: MutableSet<TransactionDTO>? = mutableSetOf<TransactionDTO>(),
-    var payerWalletId: MutableSet<TransactionDTO> = mutableSetOf<TransactionDTO>()
+    var payee: MutableSet<TransactionDTO>? = mutableSetOf<TransactionDTO>(),
+    var payer: MutableSet<TransactionDTO> = mutableSetOf<TransactionDTO>()
 ) {
     fun toWalletEntity(): Wallet = Wallet(
         walletId,
