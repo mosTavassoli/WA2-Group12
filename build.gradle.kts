@@ -34,6 +34,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation ("org.hibernate.validator:hibernate-validator")
     implementation ("javax.validation:validation-api")
+    implementation ("com.google.code.gson:gson:2.8.5")
 }
 
 tasks.withType<KotlinCompile> {

@@ -1,8 +1,12 @@
 package com.wa2.demo.entities
 
+import org.springframework.data.annotation.CreatedDate
 import org.springframework.hateoas.RepresentationModel
+import org.springframework.validation.annotation.Validated
+import java.math.BigDecimal
 import java.util.*
 import javax.persistence.*
+import javax.validation.Valid
 
 //@Entity
 //class Transaction: RepresentationModel<Transaction>() {
@@ -40,8 +44,9 @@ class Transaction(
     var payer: Wallet? = null,
 
     @Column
+    @CreatedDate // TODO
     var dateTime: Date? = null,
 
     @Column
-    var amount: Long? = null
+    var amount: BigDecimal? = null
 )

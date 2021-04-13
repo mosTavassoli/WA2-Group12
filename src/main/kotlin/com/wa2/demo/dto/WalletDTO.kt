@@ -1,4 +1,3 @@
-
 package com.wa2.demo.dto
 
 import com.wa2.demo.entities.Wallet
@@ -6,17 +5,24 @@ import com.wa2.demo.entities.Wallet
 
 data class WalletDTO(
     var walletId: Long? = null,
-    var customer: CustomerDTO?= null,
-    var currentAmount: Long?= null,
-//    var payeeId: MutableSet<TransactionDTO>? = null ,
-//    var payerId: MutableSet<TransactionDTO> = mutableSetOf<TransactionDTO>()
-){
+    var customer: CustomerDTO? = null,
+    var currentAmount: Long? = null,
+    var payeeWalletId: MutableSet<TransactionDTO>? = mutableSetOf<TransactionDTO>(),
+    var payerWalletId: MutableSet<TransactionDTO> = mutableSetOf<TransactionDTO>()
+) {
     fun toWalletEntity(): Wallet = Wallet(
         walletId,
         customer?.toCustomerEntity(),
         currentAmount,
-        )
+        mutableSetOf(),
+        mutableSetOf()
+    )
 }
-fun Wallet.toWalletDTO():WalletDTO = WalletDTO (
-            walletId,customer?.toCustomerDTO(),currentAmount
-        )
+
+fun Wallet.toWalletDTO(): WalletDTO = WalletDTO(
+    walletId,
+    customer?.toCustomerDTO(),
+    currentAmount,
+    mutableSetOf(),
+    mutableSetOf()
+)

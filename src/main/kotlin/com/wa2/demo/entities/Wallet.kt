@@ -26,20 +26,20 @@ import javax.persistence.*
 @Entity
 class Wallet(
     @Id
-                 @GeneratedValue(strategy= GenerationType.AUTO)
-                 var walletId: Long? = null,
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    var walletId: Long? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
-@JoinColumn(name = "customerId", referencedColumnName = "customerId")
-val customer: Customer? = null,
+    @JoinColumn(name = "customerId", referencedColumnName = "customerId")
+    val customer: Customer? = null,
 
-@Column
-var currentAmount: Long? = null,
+    @Column
+    var currentAmount: Long? = null,
 
-//@OneToMany(mappedBy = "payee", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
-// var payeeId: MutableList<Transaction>,
-//
-//@OneToMany(mappedBy = "payer", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
-// var payerId: MutableList<Transaction>
+    @OneToMany(mappedBy = "payee", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    var payeeId: MutableSet<Transaction>,
+
+    @OneToMany(mappedBy = "payer", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    var payerId: MutableSet<Transaction>
 )
 

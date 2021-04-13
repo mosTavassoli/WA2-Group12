@@ -5,22 +5,23 @@ import com.wa2.demo.entities.Customer
 
 data class CustomerDTO(
     var customerId: Long? = null,
-    var customerName: String? = null,
-    var customerSurname: String? = null,
+    var name: String? = null,
+    var surname: String? = null,
     var deliveryAddress: String? = null,
     var email: String? = null,
     var wallets: MutableSet<WalletDTO> = mutableSetOf<WalletDTO>()
-){
+) {
     fun toCustomerEntity(): Customer = Customer(
         customerId,
-        customerName,
-        customerSurname,
+        name,
+        surname,
         deliveryAddress,
         email,
-        mutableListOf()
+        mutableSetOf()
     )
 }
-fun Customer.toCustomerDTO():CustomerDTO = CustomerDTO (
+
+fun Customer.toCustomerDTO(): CustomerDTO = CustomerDTO(
     customerId,
     name,
     surname,
