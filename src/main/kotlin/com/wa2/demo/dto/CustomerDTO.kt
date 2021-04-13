@@ -9,7 +9,7 @@ data class CustomerDTO(
     var surname: String? = null,
     var deliveryAddress: String? = null,
     var email: String? = null,
-    var wallets: MutableSet<WalletDTO> = mutableSetOf<WalletDTO>()
+    var wallets: MutableSet<WalletDTO> = mutableSetOf()
 ) {
     fun toCustomerEntity(): Customer = Customer(
         customerId,

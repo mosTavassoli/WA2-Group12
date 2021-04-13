@@ -14,9 +14,12 @@ import kotlin.math.log
 @Transactional
 class TransactionServiceImpl(var transactionRepository: TransactionRepository) : TransactionService {
     override fun createTransaction(transactionDTO: TransactionDTO ){
-        val transaction : Transaction = transactionRepository.save(transactionDTO.toTransactionEntity())
-        println("TransactionID: ${transaction.transactionId}")
-
+        try {
+            val transaction : Transaction = transactionRepository.save(transactionDTO.toTransactionEntity())
+            println("TransactionID: ${transaction.transactionId}")
+        } catch (e: Exception) {
+            println(e.message.toString())
+        }
     }
 }
 
