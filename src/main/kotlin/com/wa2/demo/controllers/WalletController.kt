@@ -24,6 +24,7 @@ class WalletController(val transactionService: TransactionService) {
 
     @PostMapping("/{walletId}/transaction", MediaType.APPLICATION_JSON_VALUE)
     fun createTransaction(@PathVariable walletId: Long, @RequestBody body: String) {
+
         val item: JsonObject = Gson().fromJson(body, JsonObject::class.java)
         val payer = WalletDTO(item.get("payer").asLong)
         val payee = WalletDTO(walletId)
