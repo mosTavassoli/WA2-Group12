@@ -4,5 +4,5 @@ import com.wa2.demo.dto.TransactionDTO
 
 
 interface TransactionService {
-    fun createTransaction (transactionDTO: TransactionDTO)
+    fun createTransaction (transactionDTO: TransactionDTO):Int?
 }

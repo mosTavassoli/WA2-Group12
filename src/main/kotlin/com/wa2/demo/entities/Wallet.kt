@@ -1,5 +1,6 @@
 package com.wa2.demo.entities
 
+import java.math.BigDecimal
 import javax.persistence.*
 
 @Entity
@@ -13,7 +14,7 @@ class Wallet(
     val customer: Customer? = null,
 
     @Column
-    var currentAmount: Long? = null,
+    var currentAmount: BigDecimal? = null,
 
     @OneToMany(mappedBy = "payeeWallet", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
     var payees: MutableSet<Transaction>,

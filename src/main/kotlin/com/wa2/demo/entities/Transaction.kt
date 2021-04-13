@@ -20,7 +20,6 @@ class Transaction(
     var payerWallet: Wallet? = null,
 
     @Column
-    @CreatedDate // TODO
     var dateTime: Date? = null,
 
     @Column

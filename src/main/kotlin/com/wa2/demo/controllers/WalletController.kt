@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 
 @RestController
@@ -29,7 +30,7 @@ class WalletController(val transactionService: TransactionService) {
         val payer = WalletDTO(item.get("payer").asLong)
         val payee = WalletDTO(walletId)
         val transactionDTO = TransactionDTO(
-            null, payee, payer, null,
+            null, payee, payer, Date(),
             item.get("amount").asBigDecimal
         )
         transactionService.createTransaction(transactionDTO)
