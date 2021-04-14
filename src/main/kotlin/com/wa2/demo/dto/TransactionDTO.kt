@@ -19,4 +19,21 @@ data class TransactionDTO(
         dateTime,
         amount
     )
+
+    companion object {
+        fun getByTransaction(transaction: Transaction): TransactionDTO {
+
+            var payee: WalletDTO? = transaction.payeeWallet?.let { WalletDTO.getByWallet(it) }
+            var payer: WalletDTO? = transaction.payerWallet?.let { WalletDTO.getByWallet(it) }
+
+            return TransactionDTO(
+                    transactionId = transaction.transactionId!!,
+                    payeeWallet = payee,
+                    payerWallet =  payer,
+                    dateTime = transaction.dateTime,
+                    amount = transaction.amount
+            )
+
+        }
+    }
 }

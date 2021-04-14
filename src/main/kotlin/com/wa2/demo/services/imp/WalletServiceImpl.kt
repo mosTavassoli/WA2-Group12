@@ -70,6 +70,9 @@ class WalletServiceImpl (val walletRepository: WalletRepository, val customerRep
     }
 
     override fun getWalletById(walletId: Long): WalletDTO? {
-        TODO("Not yet implemented")
+
+        val wallet : Wallet =  walletRepository.findByWalletId(walletId)
+
+        return WalletDTO.getByWallet(wallet)
     }
 }
