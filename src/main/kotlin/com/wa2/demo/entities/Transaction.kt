@@ -1,6 +1,7 @@
 package com.wa2.demo.entities
 
-import org.springframework.data.annotation.CreatedDate
+
+import org.springframework.data.jpa.repository.Temporal
 import java.math.BigDecimal
 import java.util.*
 import javax.persistence.*
@@ -20,7 +21,8 @@ class Transaction(
     var payerWallet: Wallet? = null,
 
     @Column
-    var dateTime: Date? = null,
+    @Temporal(TemporalType.TIMESTAMP)
+    var dateTime: Date?,
 
     @Column
     var amount: BigDecimal? = null

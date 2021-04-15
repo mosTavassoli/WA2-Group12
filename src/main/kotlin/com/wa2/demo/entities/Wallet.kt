@@ -2,6 +2,8 @@ package com.wa2.demo.entities
 
 import java.math.BigDecimal
 import javax.persistence.*
+import javax.validation.constraints.Min
+import javax.validation.constraints.Size
 
 @Entity
 class Wallet(

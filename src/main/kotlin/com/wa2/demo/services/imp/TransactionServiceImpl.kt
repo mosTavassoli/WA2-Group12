@@ -14,15 +14,21 @@ import java.math.BigDecimal
 @Transactional
 class TransactionServiceImpl(var transactionRepository: TransactionRepository, val walletRepository: WalletRepository) :
     TransactionService {
-    override fun createTransaction(transactionDTO: TransactionDTO) :Int? {
+    override fun createTransaction(transactionDTO: TransactionDTO): Int? {
         try {
-            val wallet: Wallet = walletRepository.findByWalletId(transactionDTO.payeeWallet?.walletId!!)
-            wallet.currentAmount  =
-                BigDecimal.valueOf(wallet.currentAmount!!.toLong()) +
-                        BigDecimal.valueOf(transactionDTO.amount?.toLong()!!)
-            walletRepository.save(wallet)
-            val transaction: Transaction = transactionRepository.save(transactionDTO.toTransactionEntity())
-            return transaction.transactionId?.toInt()
+            val walletPayer: Wallet = walletRepository.findByWalletId(transactionDTO.payerWallet?.walletId!!)
+            val walletPayee: Wallet = walletRepository.findByWalletId(transactionDTO.payeeWallet?.walletId!!)
+            if (walletPayee != walletPayer) {
+                val isBalanceGreaterThanZero: BigDecimal? = walletPayer.currentAmount?.subtract(transactionDTO.amount)
+                if (isBalanceGreaterThanZero?.compareTo(BigDecimal.ZERO)!! >= 0) {
+                    walletPayer.currentAmount = walletPayer.currentAmount?.subtract(transactionDTO.amount)
+                    walletPayee.currentAmount = walletPayee.currentAmount?.add(transactionDTO.amount)
+                    walletRepository.save(walletPayee)
+                    walletRepository.save(walletPayer)
+                    val transaction: Transaction = transactionRepository.save(transactionDTO.toTransactionEntity())
+                    return transaction.transactionId?.toInt()
+                }
+            }
         } catch (e: Exception) {
             println(e.message.toString())
         }

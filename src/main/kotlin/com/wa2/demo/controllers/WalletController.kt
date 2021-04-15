@@ -20,7 +20,7 @@ import javax.validation.Valid
 class WalletController(val transactionService: TransactionService, val walletService: WalletService) {
 
     @PostMapping()
-    fun createWallet(  @RequestBody @Valid customerDTO: CustomerDTO ): ResponseEntity<String> {
+    fun createWallet(@RequestBody @Valid customerDTO: CustomerDTO): ResponseEntity<String> {
         //TODO connect service
 
 //        customerDTO from request formed only by the customerID
@@ -31,7 +31,7 @@ class WalletController(val transactionService: TransactionService, val walletSer
 
         println("Creating wallet...")
 
-        val walletItem =  Gson().toJson( wallet )
+        val walletItem = Gson().toJson(wallet)
 
 
         return ResponseEntity<String>(walletItem, HttpStatus.CREATED)
@@ -39,14 +39,16 @@ class WalletController(val transactionService: TransactionService, val walletSer
 
     @PostMapping("/{walletId}/transaction", MediaType.APPLICATION_JSON_VALUE)
     fun createTransaction(@PathVariable walletId: Long, @RequestBody body: String) {
-
         val item: JsonObject = Gson().fromJson(body, JsonObject::class.java)
-        val payer = WalletDTO(item.get("payer").asLong)
-        val payee = WalletDTO(walletId)
-        val transactionDTO = TransactionDTO(
-            null, payee, payer, Date(),
-            item.get("amount").asBigDecimal
-        )
-        transactionService.createTransaction(transactionDTO)
+        if (!item.get("payer").isJsonNull) {
+            val payer = WalletDTO(item.get("payer").asLong)
+            val payee = WalletDTO(walletId)
+            val transactionDTO = TransactionDTO(
+                null, payee, payer, Date(),
+                item.get("amount").asBigDecimal
+            )
+            transactionService.createTransaction(transactionDTO)
+        }
+
     }
 }
