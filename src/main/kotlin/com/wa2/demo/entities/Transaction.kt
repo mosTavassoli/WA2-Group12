@@ -1,6 +1,8 @@
 package com.wa2.demo.entities
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import org.springframework.data.jpa.repository.Temporal
 import java.math.BigDecimal
 import java.util.*
@@ -13,10 +15,12 @@ class Transaction(
     var transactionId: Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "payeeId", referencedColumnName = "walletId")
     var payeeWallet: Wallet? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "payerId", referencedColumnName = "walletId")
     var payerWallet: Wallet? = null,
 
