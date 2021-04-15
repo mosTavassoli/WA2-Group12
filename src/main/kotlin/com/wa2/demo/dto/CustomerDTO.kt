@@ -1,6 +1,6 @@
 package com.wa2.demo.dto
 
-import com.wa2.demo.entities.Customer
+import com.wa2.demo.domain.Customer
 
 
 data class CustomerDTO(

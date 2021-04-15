@@ -1,6 +1,5 @@
-package com.wa2.demo.entities
+package com.wa2.demo.domain
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import javax.persistence.*
 
 @Entity

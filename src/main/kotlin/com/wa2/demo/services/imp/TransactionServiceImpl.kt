@@ -1,8 +1,8 @@
 package com.wa2.demo.services.imp
 
 import com.wa2.demo.dto.TransactionDTO
-import com.wa2.demo.entities.Transaction
-import com.wa2.demo.entities.Wallet
+import com.wa2.demo.domain.Transaction
+import com.wa2.demo.domain.Wallet
 import com.wa2.demo.repositories.TransactionRepository
 import com.wa2.demo.repositories.WalletRepository
 import com.wa2.demo.services.TransactionService
@@ -56,13 +56,9 @@ class TransactionServiceImpl(var transactionRepository: TransactionRepository, v
         val queryEndDate = Date.from(eDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
 
         if (wallet.isPresent) {
-            var l = transactionRepository.findTransactionByDateTimeBetween(queryStartDate, queryEndDate)
-            return l
+            return transactionRepository.findTransactionByDateTimeBetween(queryStartDate, queryEndDate)
         }
         return null
-//        return if(!wallet.isEmpty)
-//            (transactionRepository?.findByWalletFromOrWalletTo(wallet.get(),wallet.get())?.filter { it?.transactionTime?.compareTo(endTime)!! >0 && it?.transactionTime?.compareTo(startTime)!!>0 }).toListDto()
-//        else null
     }
 }
 

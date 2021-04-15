@@ -1,6 +1,6 @@
 package com.wa2.demo.dto
 
-import com.wa2.demo.entities.Wallet
+import com.wa2.demo.domain.Wallet
 import java.math.BigDecimal
 
 

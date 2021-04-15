@@ -1,7 +1,7 @@
 package com.wa2.demo.services
 
 import com.wa2.demo.dto.TransactionDTO
-import com.wa2.demo.entities.Transaction
+import com.wa2.demo.domain.Transaction
 
 
 interface TransactionService {

@@ -1,11 +1,8 @@
-package com.wa2.demo.entities
+package com.wa2.demo.domain
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import java.math.BigDecimal
 import javax.persistence.*
-import javax.validation.constraints.Min
-import javax.validation.constraints.Size
 
 @Entity
 class Wallet(

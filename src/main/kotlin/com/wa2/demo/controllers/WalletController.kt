@@ -5,7 +5,7 @@ import com.google.gson.JsonObject
 import com.wa2.demo.dto.CustomerDTO
 import com.wa2.demo.dto.TransactionDTO
 import com.wa2.demo.dto.WalletDTO
-import com.wa2.demo.entities.Transaction
+import com.wa2.demo.domain.Transaction
 import com.wa2.demo.services.TransactionService
 import com.wa2.demo.services.WalletService
 import org.springframework.http.HttpStatus
@@ -22,19 +22,8 @@ class WalletController(val transactionService: TransactionService, val walletSer
 
     @PostMapping()
     fun createWallet(@RequestBody @Valid customerDTO: CustomerDTO): ResponseEntity<String> {
-        //TODO connect service
-
-//        customerDTO from request formed only by the customerID
-
-        println(customerDTO)
-
         val wallet: WalletDTO = walletService.addNewWallet(customerDTO)
-
-        println("Creating wallet...")
-
         val walletItem = Gson().toJson(wallet)
-
-
         return ResponseEntity<String>(walletItem, HttpStatus.CREATED)
     }
 

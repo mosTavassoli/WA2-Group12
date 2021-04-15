@@ -1,8 +1,7 @@
-package com.wa2.demo.entities
+package com.wa2.demo.domain
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import org.springframework.data.jpa.repository.Temporal
 import java.math.BigDecimal
 import java.util.*

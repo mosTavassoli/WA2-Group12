@@ -1,6 +1,6 @@
 package com.wa2.demo.repositories
 
-import com.wa2.demo.entities.Wallet
+import com.wa2.demo.domain.Wallet
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
