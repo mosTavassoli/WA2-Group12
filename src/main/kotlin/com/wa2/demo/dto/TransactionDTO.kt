@@ -1,6 +1,7 @@
 package com.wa2.demo.dto
 
 import com.wa2.demo.entities.Transaction
+import com.wa2.demo.entities.Wallet
 import java.math.BigDecimal
 import java.util.*
 import javax.validation.constraints.Min

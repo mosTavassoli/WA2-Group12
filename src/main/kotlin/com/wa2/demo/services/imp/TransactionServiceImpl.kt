@@ -9,6 +9,11 @@ import com.wa2.demo.services.TransactionService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 @Service
 @Transactional
@@ -33,6 +38,31 @@ class TransactionServiceImpl(var transactionRepository: TransactionRepository, v
             println(e.message.toString())
         }
         return 0
+    }
+
+    override fun transactionsByDate(walletId: Long, startDate: Long, endDate: Long): List<Transaction>? {
+        val wallet = walletRepository.findById(walletId)
+
+        val calStart = Calendar.getInstance()
+        val calEnd = Calendar.getInstance()
+        calStart.timeInMillis = startDate
+        calEnd.timeInMillis = endDate
+
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+        val sDate = LocalDate.parse(sdf.format(calStart.time), DateTimeFormatter.ISO_DATE)
+        val eDate = LocalDate.parse(sdf.format(calEnd.time), DateTimeFormatter.ISO_DATE)
+
+        val queryStartDate = Date.from(sDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
+        val queryEndDate = Date.from(eDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
+
+        if (wallet.isPresent) {
+            var l = transactionRepository.findTransactionByDateTimeBetween(queryStartDate, queryEndDate)
+            return l
+        }
+        return null
+//        return if(!wallet.isEmpty)
+//            (transactionRepository?.findByWalletFromOrWalletTo(wallet.get(),wallet.get())?.filter { it?.transactionTime?.compareTo(endTime)!! >0 && it?.transactionTime?.compareTo(startTime)!!>0 }).toListDto()
+//        else null
     }
 }
 

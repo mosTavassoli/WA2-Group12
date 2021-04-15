@@ -1,5 +1,6 @@
 package com.wa2.demo.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import javax.persistence.*
 
 @Entity
@@ -20,7 +21,7 @@ class Customer(
     @Column(length = 100)
     var email: String? = null,
 
-    @OneToMany(mappedBy = "customer", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, targetEntity = Wallet::class)
     var wallets: MutableSet<Wallet>
 )
 

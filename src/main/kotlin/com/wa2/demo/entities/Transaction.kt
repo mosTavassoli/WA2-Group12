@@ -12,11 +12,11 @@ class Transaction(
     @GeneratedValue
     var transactionId: Long? = null,
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payeeId", referencedColumnName = "walletId")
     var payeeWallet: Wallet? = null,
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payerId", referencedColumnName = "walletId")
     var payerWallet: Wallet? = null,
 

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import com.wa2.demo.dto.CustomerDTO
 import com.wa2.demo.dto.TransactionDTO
 import com.wa2.demo.dto.WalletDTO
+import com.wa2.demo.entities.Transaction
 import com.wa2.demo.services.TransactionService
 import com.wa2.demo.services.WalletService
 import org.springframework.http.HttpStatus
@@ -50,5 +51,14 @@ class WalletController(val transactionService: TransactionService, val walletSer
             transactionService.createTransaction(transactionDTO)
         }
 
+    }
+
+    @GetMapping("/{walletId}/transactions", MediaType.APPLICATION_JSON_VALUE)
+    fun getTransactionByDateTime(
+        @PathVariable walletId: Long,
+        @RequestParam(name = "from") startDate: Long,
+        @RequestParam(name = "to") endDate: Long
+    ): List<Transaction>? {
+        return transactionService.transactionsByDate(walletId, startDate, endDate)
     }
 }
