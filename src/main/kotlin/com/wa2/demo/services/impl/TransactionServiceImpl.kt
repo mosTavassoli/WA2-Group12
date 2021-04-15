@@ -1,4 +1,4 @@
-package com.wa2.demo.services.imp
+package com.wa2.demo.services.impl
 
 import com.wa2.demo.dto.TransactionDTO
 import com.wa2.demo.domain.Transaction

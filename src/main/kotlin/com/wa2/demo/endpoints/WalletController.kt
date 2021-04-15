@@ -1,4 +1,4 @@
-package com.wa2.demo.controllers
+package com.wa2.demo.endpoints
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject

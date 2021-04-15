@@ -1,4 +1,4 @@
-package com.wa2.demo.services.imp
+package com.wa2.demo.services.impl
 
 import com.wa2.demo.dto.CustomerDTO
 import com.wa2.demo.dto.WalletDTO
