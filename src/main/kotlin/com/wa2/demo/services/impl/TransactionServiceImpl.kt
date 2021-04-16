@@ -3,9 +3,11 @@ package com.wa2.demo.services.impl
 import com.wa2.demo.dto.TransactionDTO
 import com.wa2.demo.domain.Transaction
 import com.wa2.demo.domain.Wallet
+import com.wa2.demo.dto.toTransactionDTO
 import com.wa2.demo.repositories.TransactionRepository
 import com.wa2.demo.repositories.WalletRepository
 import com.wa2.demo.services.TransactionService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -17,12 +19,15 @@ import java.util.*
 
 @Service
 @Transactional
-class TransactionServiceImpl(var transactionRepository: TransactionRepository, val walletRepository: WalletRepository) :
+class TransactionServiceImpl(
+    @Autowired var transactionRepository: TransactionRepository,
+    @Autowired val walletRepository: WalletRepository,
+) :
     TransactionService {
     override fun createTransaction(transactionDTO: TransactionDTO): Int? {
         try {
-            val walletPayer: Wallet = walletRepository.findByWalletId(transactionDTO.payerWallet?.walletId!!)
-            val walletPayee: Wallet = walletRepository.findByWalletId(transactionDTO.payeeWallet?.walletId!!)
+            val walletPayer: Wallet = transactionDTO.payerWallet?.walletId.let { walletRepository.findByWalletId(it!!) }
+            val walletPayee: Wallet = transactionDTO.payeeWallet?.walletId.let { walletRepository.findByWalletId(it!!) }
             if (walletPayee != walletPayer) {
                 val isBalanceGreaterThanZero: BigDecimal? = walletPayer.currentAmount?.subtract(transactionDTO.amount)
                 if (isBalanceGreaterThanZero?.compareTo(BigDecimal.ZERO)!! >= 0) {
@@ -59,6 +64,14 @@ class TransactionServiceImpl(var transactionRepository: TransactionRepository, v
             return transactionRepository.findTransactionByDateTimeBetween(queryStartDate, queryEndDate)
         }
         return null
+    }
+
+    override fun getTransactionDetails(walletId: Long, transactionId: Long): TransactionDTO? {
+        val wallet = walletRepository.findByWalletId(walletId)
+        return transactionRepository.findByPayeeWalletOrPayerWallet(
+            wallet,
+            wallet
+        ).find { it?.transactionId == transactionId }?.toTransactionDTO()
     }
 }
 

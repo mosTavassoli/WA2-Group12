@@ -37,3 +37,11 @@ data class TransactionDTO(
         }
     }
 }
+
+fun Transaction.toTransactionDTO(): TransactionDTO = TransactionDTO(
+    transactionId,
+    payeeWallet?.toWalletDTO(),
+    payerWallet?.toWalletDTO(),
+    dateTime,
+    amount
+)

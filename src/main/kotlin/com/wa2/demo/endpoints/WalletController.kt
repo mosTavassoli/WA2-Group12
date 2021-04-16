@@ -8,6 +8,7 @@ import com.wa2.demo.dto.WalletDTO
 import com.wa2.demo.domain.Transaction
 import com.wa2.demo.services.TransactionService
 import com.wa2.demo.services.WalletService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -18,7 +19,10 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/wallet")
-class WalletController(val transactionService: TransactionService, val walletService: WalletService) {
+class WalletController(
+    @Autowired val transactionService: TransactionService,
+    @Autowired val walletService: WalletService
+) {
 
     @PostMapping()
     fun createWallet(@RequestBody @Valid customerDTO: CustomerDTO): ResponseEntity<String> {
@@ -49,5 +53,13 @@ class WalletController(val transactionService: TransactionService, val walletSer
         @RequestParam(name = "to") endDate: Long
     ): List<Transaction>? {
         return transactionService.transactionsByDate(walletId, startDate, endDate)
+    }
+
+    @GetMapping("/{walletId}/transactions/{transactionId}")
+    fun getTransactionDetails(
+        @PathVariable walletId: Long,
+        @PathVariable transactionId: Long
+    ): TransactionDTO? {
+        return transactionService.getTransactionDetails(walletId, transactionId)
     }
 }
