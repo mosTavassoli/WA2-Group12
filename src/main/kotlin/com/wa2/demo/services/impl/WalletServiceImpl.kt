@@ -34,6 +34,6 @@ class WalletServiceImpl(
 
     override fun getWalletById(walletId: Long): WalletDTO? {
         val wallet: Wallet = walletRepository.findByWalletId(walletId)
-        return WalletDTO.getByWallet(wallet)
+        return wallet.toWalletDTO()
     }
 }

@@ -31,6 +31,11 @@ class WalletController(
         return ResponseEntity<String>(walletItem, HttpStatus.CREATED)
     }
 
+    @GetMapping("/{walletId}")
+    fun getWalletDetails(@PathVariable walletId: Long):WalletDTO?{
+        return walletService.getWalletById(walletId)
+    }
+
     @PostMapping("/{walletId}/transaction", MediaType.APPLICATION_JSON_VALUE)
     fun createTransaction(@PathVariable walletId: Long, @RequestBody body: String) {
         val item: JsonObject = Gson().fromJson(body, JsonObject::class.java)
