@@ -33,7 +33,15 @@ class WalletServiceImpl(
     }
 
     override fun getWalletById(walletId: Long): WalletDTO? {
-        val wallet: Wallet = walletRepository.findByWalletId(walletId)
-        return wallet.toWalletDTO()
+
+        try {
+            val wallet: Wallet = walletRepository.findByWalletId(walletId)
+            return wallet.toWalletDTO()
+        }catch (ex: Exception){
+            ex.printStackTrace()
+            println(ex.message.toString())
+        }
+
+        return null
     }
 }
