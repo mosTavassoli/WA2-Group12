@@ -36,7 +36,7 @@ class WalletController(
         return walletService.getWalletById(walletId)
     }
 
-    @PostMapping("/{walletId}/transaction", MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/{walletId}/transactions", MediaType.APPLICATION_JSON_VALUE)
     fun createTransaction(@PathVariable walletId: Long, @RequestBody body: String) {
         val item: JsonObject = Gson().fromJson(body, JsonObject::class.java)
         if (!item.get("payer").isJsonNull) {
