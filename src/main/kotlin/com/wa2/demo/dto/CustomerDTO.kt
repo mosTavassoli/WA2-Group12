@@ -19,7 +19,7 @@ data class CustomerDTO(
         customer.email = email
         customer.name = name
         customer.surname = surname
-        customer.wallets = wallets.map {a -> a.toWalletEntity()}.toMutableSet()
+        customer.wallets = wallets.map { a -> a.toWalletEntity() }.toMutableSet()
         return customer
     }
 }

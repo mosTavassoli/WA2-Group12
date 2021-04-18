@@ -20,8 +20,6 @@ data class WalletDTO(
         wallet.payers = payers.map { a -> a.toTransactionEntity() }.toMutableSet()
         return wallet
     }
-
-
 }
 
 fun Wallet.toWalletDTO(): WalletDTO = WalletDTO(

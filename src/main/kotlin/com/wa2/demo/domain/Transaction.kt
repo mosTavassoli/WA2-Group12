@@ -2,7 +2,6 @@ package com.wa2.demo.domain
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference
-import org.springframework.data.jpa.repository.Temporal
 import java.math.BigDecimal
 import java.util.*
 import javax.persistence.*
@@ -24,6 +23,7 @@ class Transaction {
     var payerWallet: Wallet? = null
 
     @Column
+    @Temporal(TemporalType.TIMESTAMP)
     var dateTime: Date? = null
 
     @Column

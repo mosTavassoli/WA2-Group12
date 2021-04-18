@@ -26,9 +26,9 @@ class TransactionServiceImpl(
     override fun createTransaction(transactionDTO: TransactionDTO): Int? {
         try {
 //            val walletPayer: Wallet = transactionDTO.payerWallet?.walletId.let { walletRepository.findByWalletId(it!!) }
+//            val walletPayee: Wallet = transactionDTO.payeeWallet?.walletId.let { walletRepository.findByWalletId(it!!) }
             val walletPayerOp = walletRepository.findById(transactionDTO.payerWallet?.walletId!!)
             val walletPayeeOp = walletRepository.findById(transactionDTO.payeeWallet?.walletId!!)
-//            val walletPayee: Wallet = transactionDTO.payeeWallet?.walletId.let { walletRepository.findByWalletId(it!!) }
             if (walletPayeeOp.isPresent && walletPayerOp.isPresent) {
                 val walletPayer = walletPayerOp.get()
                 val walletPayee = walletPayeeOp.get()
@@ -42,43 +42,38 @@ class TransactionServiceImpl(
                         walletRepository.save(walletPayer)
                         val transaction: Transaction = transactionRepository.save(transactionDTO.toTransactionEntity())
                         return transaction.transactionId?.toInt()
-                    }
-                }
-            } else throw Exception("Payee or Payer not found")
+                    }else throw Exception("Error: Your balance is not Enough for performing this Transaction.")
+                } else throw Exception("Error: Payee and Payer are the same.")
+            } else throw Exception("Error: Payee or Payer does not exist.")
         } catch (e: Exception) {
             throw e
         }
-        return 0
     }
 
     override fun transactionsByDate(walletId: Long, startDate: Long, endDate: Long): List<TransactionDTO>? {
         val wallet = walletRepository.findById(walletId)
-
         val calStart = Calendar.getInstance()
         val calEnd = Calendar.getInstance()
         calStart.timeInMillis = startDate
         calEnd.timeInMillis = endDate
-
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
         val sDate = LocalDate.parse(sdf.format(calStart.time), DateTimeFormatter.ISO_DATE)
         val eDate = LocalDate.parse(sdf.format(calEnd.time), DateTimeFormatter.ISO_DATE)
-
         val queryStartDate = Date.from(sDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
         val queryEndDate = Date.from(eDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
-
         if (wallet.isPresent) {
-            var result = transactionRepository.findTransactionByDateTimeBetween(queryStartDate, queryEndDate)?.map {a -> a.toTransactionDTO()}
-            return result
+            return transactionRepository.findTransactionByDateTimeBetween(queryStartDate, queryEndDate)
+                ?.map { a -> a.toTransactionDTO() }
         } else
-        throw Exception("The wallet not found")
+            throw Exception("Error: The Wallet does not exist.")
     }
 
     override fun getTransactionDetails(walletId: Long, transactionId: Long): Transaction? {
         try {
             val walletOp = walletRepository.findById(walletId)
-            if (!walletOp.isPresent) throw Exception("Wallet not found")
+            if (!walletOp.isPresent) throw Exception("Error: The Wallet does not exist.")
             return transactionRepository.findTransactionByTransactionIdAndPayerWallet(transactionId, walletOp.get())
-                ?: throw Exception("Transaction not found")
+                ?: throw Exception("Error: The Transaction does not exist.")
         } catch (ex: Exception) {
             throw ex
         }

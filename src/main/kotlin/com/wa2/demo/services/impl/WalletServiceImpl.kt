@@ -1,6 +1,5 @@
 package com.wa2.demo.services.impl
 
-import com.wa2.demo.dto.CustomerDTO
 import com.wa2.demo.dto.WalletDTO
 import com.wa2.demo.dto.toWalletDTO
 import com.wa2.demo.domain.Customer
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
-import java.util.*
 
 @Service
 @Transactional
@@ -26,8 +24,7 @@ class WalletServiceImpl(
             var customer = Customer()
             if (customerOp.isPresent)
                 customer = customerOp.get()
-            else throw Exception("Customer does not exist!")
-
+            else throw Exception("Error: The Customer does not exist.")
             val wallet = Wallet()
             wallet.customer = customer
             wallet.currentAmount = BigDecimal(0)
@@ -36,7 +33,6 @@ class WalletServiceImpl(
         } catch (e: Exception) {
             throw e
         }
-        return WalletDTO()
     }
 
     override fun getWalletById(walletId: Long): WalletDTO? {
@@ -44,7 +40,7 @@ class WalletServiceImpl(
             val wallet: Wallet = walletRepository.findByWalletId(walletId)
             return wallet.toWalletDTO()
         } catch (ex: Exception) {
-            throw java.lang.Exception("Wallet not found " + ex.message)
+            throw Exception("Error: The Wallet does not exist.")
         }
     }
 }
