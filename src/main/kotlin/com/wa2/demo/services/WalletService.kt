@@ -5,6 +5,6 @@ import com.wa2.demo.dto.WalletDTO
 
 
 interface WalletService {
-    fun addNewWallet (customerDTO: CustomerDTO) : WalletDTO
+    fun addNewWallet (customerId: Long) : WalletDTO
     fun getWalletById (walletId: Long) : WalletDTO?
 }

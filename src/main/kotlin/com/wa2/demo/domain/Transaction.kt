@@ -8,25 +8,24 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-class Transaction(
+class Transaction {
     @Id
     @GeneratedValue
-    var transactionId: Long? = null,
+    var transactionId: Long? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "payeeId", referencedColumnName = "walletId")
-    var payeeWallet: Wallet? = null,
+    var payeeWallet: Wallet? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "payerId", referencedColumnName = "walletId")
-    var payerWallet: Wallet? = null,
+    var payerWallet: Wallet? = null
 
     @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    var dateTime: Date?,
+    var dateTime: Date? = null
 
     @Column
     var amount: BigDecimal? = null
-)
+}

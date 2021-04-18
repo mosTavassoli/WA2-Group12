@@ -1,6 +1,7 @@
 package com.wa2.demo.dto
 
 import com.wa2.demo.domain.Customer
+import com.wa2.demo.domain.Wallet
 
 
 data class CustomerDTO(
@@ -11,33 +12,15 @@ data class CustomerDTO(
     var email: String? = null,
     var wallets: MutableSet<WalletDTO> = mutableSetOf()
 ) {
-    fun toCustomerEntity(): Customer = Customer(
-        customerId,
-        name,
-        surname,
-        deliveryAddress,
-        email,
-        mutableSetOf()
-    )
-
-    companion object {
-        fun getByCustomer(customer: Customer): CustomerDTO {
-
-            var customerDTO = CustomerDTO()
-
-            customerDTO.customerId = customer.customerId
-            customerDTO.name = customer.name
-            customerDTO.surname = customer.surname
-            customerDTO.deliveryAddress = customer.deliveryAddress
-            customerDTO.email = customer.email
-
-            customerDTO.wallets = mutableSetOf<WalletDTO>()
-            for (itm in customer.wallets)
-                customerDTO.wallets.add(WalletDTO.getByWallet(itm))
-
-
-            return customerDTO
-        }
+    fun toCustomerEntity(): Customer {
+        val customer = Customer()
+        customer.customerId = customerId
+        customer.deliveryAddress = deliveryAddress
+        customer.email = email
+        customer.name = name
+        customer.surname = surname
+        customer.wallets = wallets.map {a -> a.toWalletEntity()}.toMutableSet()
+        return customer
     }
 }
 

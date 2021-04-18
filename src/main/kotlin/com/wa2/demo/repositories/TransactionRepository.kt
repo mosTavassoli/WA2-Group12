@@ -9,5 +9,6 @@ import java.util.*
 @Repository
 interface TransactionRepository : CrudRepository<Transaction, Long> {
     fun findTransactionByDateTimeBetween(startDate: Date, endDate: Date): List<Transaction>?
-    fun findByPayeeWalletOrPayerWallet(walletPayee: Wallet, walletPayer: Wallet): List<Transaction?>
+    fun findTransactionByTransactionIdAndPayerWallet(transactionId: Long, walletPayer: Wallet) : Transaction?
+//    fun findByPayerWallet(walletPayer: Wallet, transactionId: Long): List<Transaction?>
 }

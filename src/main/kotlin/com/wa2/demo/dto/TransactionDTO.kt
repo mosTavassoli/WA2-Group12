@@ -12,29 +12,14 @@ data class TransactionDTO(
     var amount: BigDecimal? = null
 ) {
     // TODO Create extension Function , toTransaction
-    fun toTransactionEntity(): Transaction = Transaction(
-        transactionId,
-        payeeWallet?.toWalletEntity(),
-        payerWallet?.toWalletEntity(),
-        dateTime,
-        amount
-    )
-
-    companion object {
-        fun getByTransaction(transaction: Transaction): TransactionDTO {
-
-            var payee: WalletDTO? = transaction.payeeWallet?.let { WalletDTO.getByWallet(it) }
-            var payer: WalletDTO? = transaction.payerWallet?.let { WalletDTO.getByWallet(it) }
-
-            return TransactionDTO(
-                transactionId = transaction.transactionId!!,
-                payeeWallet = payee,
-                payerWallet = payer,
-                dateTime = transaction.dateTime,
-                amount = transaction.amount
-            )
-
-        }
+    fun toTransactionEntity(): Transaction {
+        val transaction = Transaction()
+        transaction.transactionId = transactionId
+        transaction.payeeWallet = payeeWallet?.toWalletEntity()
+        transaction.payerWallet = payerWallet?.toWalletEntity()
+        transaction.dateTime = dateTime
+        transaction.amount = amount
+        return transaction
     }
 }
 

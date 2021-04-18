@@ -3,24 +3,24 @@ package com.wa2.demo.domain
 import javax.persistence.*
 
 @Entity
-class Customer(
+class Customer {
     @Id
     @GeneratedValue
-    var customerId: Long? = null,
+    var customerId: Long? = null
 
     @Column(length = 100)
-    var name: String? = null,
+    var name: String? = null
 
     @Column(length = 150)
-    var surname: String? = null,
+    var surname: String? = null
 
     @Column(length = 250)
-    var deliveryAddress: String? = null,
+    var deliveryAddress: String? = null
 
     @Column(length = 100)
-    var email: String? = null,
+    var email: String? = null
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, targetEntity = Wallet::class)
-    var wallets: MutableSet<Wallet>
-)
+    lateinit var wallets: MutableSet<Wallet>
+}
 
