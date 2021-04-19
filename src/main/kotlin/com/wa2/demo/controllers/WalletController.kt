@@ -6,6 +6,7 @@ import com.wa2.demo.dto.WalletDTO
 import com.wa2.demo.dto.toTransactionDTO
 import com.wa2.demo.services.TransactionService
 import com.wa2.demo.services.WalletService
+import com.wa2.demo.utils.Constants
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -22,7 +23,7 @@ class WalletController(
     @Autowired val walletService: WalletService
 ) {
 
-    @PostMapping()
+    @PostMapping(Constants.CREATE_WALLET)
     fun createWallet(@RequestBody @Valid body: String): ResponseEntity<String> {
         return try {
             val item: JsonObject = Gson().fromJson(body, JsonObject::class.java)
@@ -34,7 +35,7 @@ class WalletController(
         }
     }
 
-    @GetMapping("/{walletId}")
+    @GetMapping(Constants.GET_WALLET_DETAILS)
     fun getWalletDetails(@PathVariable walletId: Long): ResponseEntity<String> {
         return try {
             val result = Gson().toJson(walletService.getWalletById(walletId))
@@ -44,7 +45,7 @@ class WalletController(
         }
     }
 
-    @PostMapping("/{walletId}/transactions", MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(Constants.CREATE_TRANSACTION, MediaType.APPLICATION_JSON_VALUE)
     fun createTransaction(@PathVariable walletId: Long, @RequestBody body: String): ResponseEntity<String> {
         return try {
             val item: JsonObject = Gson().fromJson(body, JsonObject::class.java)
@@ -65,7 +66,7 @@ class WalletController(
         }
     }
 
-    @GetMapping("/{walletId}/transactions", MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(Constants.GET_TRANSACTION_BY_DATE_TIME, MediaType.APPLICATION_JSON_VALUE)
     fun getTransactionByDateTime(
         @PathVariable walletId: Long,
         @Valid @RequestParam(name = "from") startDate: Long,
@@ -81,7 +82,7 @@ class WalletController(
         }
     }
 
-    @GetMapping("/{walletId}/transactions/{transactionId}")
+    @GetMapping(Constants.GET_TRANSACTION_DETAILS)
     fun getTransactionDetails(
         @PathVariable walletId: Long,
         @PathVariable transactionId: Long
