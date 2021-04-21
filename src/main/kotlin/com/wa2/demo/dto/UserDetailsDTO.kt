@@ -11,13 +11,8 @@ data class UserDetailsDTO(
         var email: String? = null,
         var isEnabled: Boolean = false,
         var roles: MutableSet<RoleNames> = mutableSetOf()
-) {
-    companion object {
-        fun UsertoUserDetailsDTO(user: User): UserDetailsDTO? {
-
-            return null
-        }
-    }
+)
+{
 }
 
 fun User.toUserDetailsDTO(): UserDetailsDTO = UserDetailsDTO(
