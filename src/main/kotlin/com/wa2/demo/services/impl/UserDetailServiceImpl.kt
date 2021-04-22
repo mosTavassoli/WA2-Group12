@@ -15,7 +15,7 @@ import java.lang.Exception
 @Transactional
 class UserDetailServiceImpl(@Autowired val userRepository: UserRepository): UserDetailsService {
 
-    override fun addUser(username: String, password: String, email: String, isEnabled: Boolean?, roles: MutableSet<RoleNames>)
+    override fun addUser(username: String, password: String, email: String, isEnabled: Boolean?, roles: String?)
     : UserDetailsDTO? {
         try {
             var user = User()
@@ -36,7 +36,7 @@ class UserDetailServiceImpl(@Autowired val userRepository: UserRepository): User
         return null
     }
 
-    override fun addUserRole(username: String, role: RoleNames) {
+    override fun addUserRole(username: String, role: String) {
         try {
 
             var user = userRepository.findByUsername(username)
@@ -50,7 +50,7 @@ class UserDetailServiceImpl(@Autowired val userRepository: UserRepository): User
         }
     }
 
-    override fun removeUserRole(username: String, role: RoleNames) {
+    override fun removeUserRole(username: String, role: String) {
         try {
 
             var user = userRepository.findByUsername(username)

@@ -1,6 +1,8 @@
 package com.wa2.demo.utils
 
-enum class RoleNames {
-    CUSTOMER,
-    ADMIN
+class RoleNames {
+    companion object{
+        const val CUSTOMER = "CUSTOMER"
+        const val ADMIN = "ADMIN"
+    }
 }

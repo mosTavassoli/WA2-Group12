@@ -10,7 +10,7 @@ data class UserDetailsDTO(
         var password: String? = null,
         var email: String? = null,
         var isEnabled: Boolean = false,
-        var roles: MutableSet<RoleNames> = mutableSetOf()
+        var roles: String? = null
 )
 {
 }

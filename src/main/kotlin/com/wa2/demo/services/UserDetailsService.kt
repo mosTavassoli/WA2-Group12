@@ -8,9 +8,9 @@ import com.wa2.demo.utils.RoleNames
 
 
 interface UserDetailsService {
-    fun addUser (username: String, password: String, email: String, isEnabled: Boolean?, roles: MutableSet<RoleNames>) : UserDetailsDTO?
-    fun addUserRole(username: String, role: RoleNames)
-    fun removeUserRole(username: String, role: RoleNames)
+    fun addUser (username: String, password: String, email: String, isEnabled: Boolean?, roles: String?) : UserDetailsDTO?
+    fun addUserRole(username: String, role: String)
+    fun removeUserRole(username: String, role: String)
     fun enableUser(username: String)
     fun disableUser(username: String)
     fun loadUserByUsername(username:String) : UserDetailsDTO

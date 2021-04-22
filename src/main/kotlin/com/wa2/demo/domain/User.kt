@@ -1,8 +1,7 @@
 package com.wa2.demo.domain
 
-import com.wa2.demo.utils.RoleNames
 import javax.persistence.*
-import javax.validation.constraints
+//import javax.validation.constraints
 import com.sun.istack.internal.*
 
 @Entity
@@ -29,17 +28,44 @@ class User {
     var isEnabled: Boolean = false
 
     @Column
-    lateinit var roles: MutableSet<RoleNames>
+    var roles: String? = null
 
 
-    fun addRole(role:RoleNames){
-        if(!roles.contains(role))
-            roles.add(role)
+    fun addRole(inputRole:String){
+
+        if(roles!=null) {
+            var userRoles = roles!!.split(';')
+
+            var found = false
+            for(role in userRoles){
+                if(role == inputRole){
+                    found=true
+                    break
+                }
+            }
+            if(!found)
+                roles+= ";$inputRole"
+        }else{
+            roles = inputRole
+        }
     }
 
-    fun removeRole(role:RoleNames){
-        if(roles.contains(role))
-            roles.remove(role)
+    fun removeRole(inputRole:String){
+
+        if(roles!=null) {
+            var userRoles = roles!!.split(';')
+
+            var index = -1
+            for(i in userRoles.indices){
+                if(userRoles[i] == inputRole){
+                    index = i
+                    break
+                }
+            }
+            if(index>-1) {
+                userRoles.drop(index)
+                roles = userRoles.joinToString(separator = ";")
+            }
+        }
     }
 }
-
