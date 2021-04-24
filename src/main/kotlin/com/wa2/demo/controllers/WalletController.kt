@@ -97,4 +97,11 @@ class WalletController(
             ResponseEntity<String>(ex.message.toString(), HttpStatus.BAD_REQUEST)
         }
     }
+
+    @PostMapping(Constants.SIGN_IN)
+    fun authenticateUser (@Valid @RequestBody body:String) : ResponseEntity<Any>?{
+
+
+        return null
+    }
 }
