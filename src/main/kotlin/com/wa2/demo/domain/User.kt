@@ -1,6 +1,7 @@
 package com.wa2.demo.domain
 
 import com.sun.istack.NotNull
+import com.wa2.demo.utils.RoleNames
 import javax.persistence.*
 //import javax.validation.constraints
 
@@ -31,14 +32,14 @@ class User {
     var roles: String? = null
 
 
-    fun addRole(inputRole:String){
+    fun addRole(inputRole:RoleNames){
 
         if(roles!=null) {
             var userRoles = roles!!.split(';')
 
             var found = false
             for(role in userRoles){
-                if(role == inputRole){
+                if(role == inputRole.toString()){
                     found=true
                     break
                 }
@@ -46,18 +47,18 @@ class User {
             if(!found)
                 roles+= ";$inputRole"
         }else{
-            roles = inputRole
+            roles = inputRole.toString()
         }
     }
 
-    fun removeRole(inputRole:String){
+    fun removeRole(inputRole:RoleNames){
 
         if(roles!=null) {
             var userRoles = roles!!.split(';')
 
             var index = -1
             for(i in userRoles.indices){
-                if(userRoles[i] == inputRole){
+                if(userRoles[i] == inputRole.toString()){
                     index = i
                     break
                 }

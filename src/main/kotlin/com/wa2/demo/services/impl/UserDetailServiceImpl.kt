@@ -18,7 +18,7 @@ class UserDetailServiceImpl(): UserDetailsService {
     @Autowired
     lateinit var userRepository: UserRepository
 
-    override fun addUser(username: String, password: String, email: String, isEnabled: Boolean?, roles: String?)
+    override fun addUser(username: String, password: String, email: String, isEnabled: Boolean?, roles: List<RoleNames>?)
     : UserDetailsDTO? {
         try {
             var user = User()
@@ -28,7 +28,11 @@ class UserDetailServiceImpl(): UserDetailsService {
             if (isEnabled != null) {
                 user.isEnabled = isEnabled
             }
-            user.roles = roles
+            if(roles!=null) {
+                for (role in roles) {
+                    user.addRole(role)
+                }
+            }
             val repository = userRepository.save(user)
             return repository.toUserDetailsDTO()
 
@@ -39,7 +43,7 @@ class UserDetailServiceImpl(): UserDetailsService {
         return null
     }
 
-    override fun addUserRole(username: String, role: String) {
+    override fun addUserRole(username: String, role: RoleNames) {
         try {
 
             var user = userRepository.findByUsername(username)
@@ -53,7 +57,7 @@ class UserDetailServiceImpl(): UserDetailsService {
         }
     }
 
-    override fun removeUserRole(username: String, role: String) {
+    override fun removeUserRole(username: String, role: RoleNames) {
         try {
 
             var user = userRepository.findByUsername(username)
