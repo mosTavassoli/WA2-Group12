@@ -13,7 +13,10 @@ import java.lang.Exception
 
 @Service
 @Transactional
-class UserDetailServiceImpl(@Autowired val userRepository: UserRepository): UserDetailsService {
+class UserDetailServiceImpl(): UserDetailsService {
+
+    @Autowired
+    lateinit var userRepository: UserRepository
 
     override fun addUser(username: String, password: String, email: String, isEnabled: Boolean?, roles: String?)
     : UserDetailsDTO? {

@@ -19,10 +19,14 @@ import java.util.*
 @Service
 @Transactional
 class TransactionServiceImpl(
-    @Autowired var transactionRepository: TransactionRepository,
-    @Autowired val walletRepository: WalletRepository,
+
 ) :
     TransactionService {
+
+    @Autowired lateinit var transactionRepository: TransactionRepository
+    @Autowired lateinit var walletRepository: WalletRepository
+
+
     override fun createTransaction(transactionDTO: TransactionDTO): Int? {
         try {
 //            val walletPayer: Wallet = transactionDTO.payerWallet?.walletId.let { walletRepository.findByWalletId(it!!) }

@@ -1,8 +1,8 @@
 package com.wa2.demo.domain
 
+import com.sun.istack.NotNull
 import javax.persistence.*
 //import javax.validation.constraints
-import com.sun.istack.internal.*
 
 @Entity
 @Table(indexes = [Index(name = "index", columnList = "username", unique = true)])
