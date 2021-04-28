@@ -5,6 +5,7 @@ import com.wa2.demo.dto.UserDetailsDTO
 import com.wa2.demo.dto.toUserDetailsDTO
 import com.wa2.demo.repositories.UserRepository
 import com.wa2.demo.services.MailService
+import com.wa2.demo.services.NotificationService
 import com.wa2.demo.services.UserDetailsService
 import com.wa2.demo.utils.RoleNames
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.lang.Exception
+import java.util.*
 
 @Service
 @Transactional
@@ -22,6 +24,9 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
 
     @Autowired
     lateinit var mailService: MailService
+
+    @Autowired
+    lateinit var notificationService: NotificationService
 
     override fun addUser(username: String, password: String, email: String, isEnabled: Boolean?, roles: List<RoleNames>?)
     : UserDetailsDTO? {
@@ -40,7 +45,10 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
             }
             val repository = userRepository.save(user)
 
-            mailService.sendMessage()
+
+            var token : UUID = notificationService.saveToken(username)
+
+            mailService.sendMessage(email, token)
 
             return repository.toUserDetailsDTO()
 

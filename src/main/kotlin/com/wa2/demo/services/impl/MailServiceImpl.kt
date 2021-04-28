@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class MailServiceImpl(  ) : MailService {
@@ -15,13 +16,13 @@ class MailServiceImpl(  ) : MailService {
     @Autowired lateinit var message: SimpleMailMessage
 
 
-    override fun sendMessage() {
+    override fun sendMessage(email: String, token: UUID) {
 
 
 
         message.setSubject("Confirm your Email")
-        message.setText("Your token: ABCD")
-        message.setTo("webapp2confirmation@gmail.com")
+        message.setText("Your token: " + token)
+        message.setTo(email)
 
         try{
 
