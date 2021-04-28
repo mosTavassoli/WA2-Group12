@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
+import java.util.*
 import javax.validation.Valid
 
 
@@ -100,9 +101,10 @@ class AuthenticationController {
 
 
     @GetMapping(Constants.REGISTRATION_CONFORMATION)
-    fun registrationConfirmation(){
+    fun registrationConfirmation(@PathVariable token: UUID){
 
 
+        UserDetailsService.verifyToken(token)
 
 
 

@@ -28,6 +28,8 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
     @Autowired
     lateinit var notificationService: NotificationService
 
+
+
     override fun addUser(username: String, password: String, email: String, isEnabled: Boolean?, roles: List<RoleNames>?)
     : UserDetailsDTO? {
         try {
@@ -43,11 +45,14 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
                     user.addRole(role)
                 }
             }
+
+            //Save user details
             val repository = userRepository.save(user)
 
-
+            //Save verification token
             var token : UUID = notificationService.saveToken(username)
 
+            //Send verification token
             mailService.sendMessage(email, token)
 
             return repository.toUserDetailsDTO()
@@ -59,6 +64,15 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
 
         return null
     }
+
+    override fun verifyToken(token: UUID) {
+
+        notificationService.verifyToken(token)
+
+
+    }
+
+
 
     override fun addUserRole(username: String, role: RoleNames) {
         try {

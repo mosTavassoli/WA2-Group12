@@ -11,5 +11,8 @@ class Constants {
         const val REGISTER = "/auth/register"
         const val SIGN_IN = "/auth/signin"
         const val REGISTRATION_CONFORMATION = "/auth/registrationConfirm?token=<token>"
+
+        // 1 minute = 60000
+        const val ExpiryTimeInMilliseconds = 1800000
     }
 }

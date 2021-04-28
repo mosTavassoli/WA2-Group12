@@ -16,7 +16,6 @@ class EmailVerificationToken {
     var username: String? = null
 
     @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    var Timestamp: Date? =  null
+    var expirationTimestamp: Long? =  null
 
 }
