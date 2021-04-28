@@ -3,6 +3,7 @@ package com.wa2.demo.controllers
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.wa2.demo.dto.LoginDTO
+import com.wa2.demo.dto.UserDetailsDTO
 import com.wa2.demo.services.UserDetailsService
 import com.wa2.demo.utils.Constants
 import com.wa2.demo.utils.RoleNames
@@ -21,10 +22,11 @@ class AuthenticationController {
 
     @Autowired lateinit var UserDetailsService : UserDetailsService
 
+
     val EMAIL_REGEX = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})";
 
     @PostMapping(Constants.REGISTER)
-    fun register(@RequestBody @Valid body : String){
+    fun register(@RequestBody @Valid body : String) : ResponseEntity<String> {
 
         val item : JsonObject = Gson().fromJson( body, JsonObject::class.java )
 
@@ -32,17 +34,22 @@ class AuthenticationController {
 
             println("Request OK!")
 
-            UserDetailsService.addUser(
+            var UserDetailsDTO : UserDetailsDTO? = UserDetailsService.addUser(
                 item.get("username").toString(),
                 item.get("password").toString(),
                 item.get("email").toString(),
                 false,
                 listOf<RoleNames>(RoleNames.CUSTOMER)
             )
-
+            if(UserDetailsDTO != null)
+                return ResponseEntity( Gson().toJson(UserDetailsDTO), HttpStatus.CREATED )
+            else
+                return ResponseEntity( Gson().toJson("Username or email already in use"), HttpStatus.CONFLICT)
         }
-        else println("Request not OK")
-
+        else {
+            println("Request not OK")
+            return ResponseEntity(Gson().toJson("Request not valid"),HttpStatus.BAD_REQUEST)
+        }
 
         println(item)
         println(item.get("password") == null)

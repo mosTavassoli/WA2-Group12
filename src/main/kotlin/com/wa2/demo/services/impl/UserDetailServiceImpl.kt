@@ -4,6 +4,7 @@ import com.wa2.demo.domain.User
 import com.wa2.demo.dto.UserDetailsDTO
 import com.wa2.demo.dto.toUserDetailsDTO
 import com.wa2.demo.repositories.UserRepository
+import com.wa2.demo.services.MailService
 import com.wa2.demo.services.UserDetailsService
 import com.wa2.demo.utils.RoleNames
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,10 +15,13 @@ import java.lang.Exception
 
 @Service
 @Transactional
-class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder): UserDetailsService {
+class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetailsService {
 
     @Autowired
     lateinit var userRepository: UserRepository
+
+    @Autowired
+    lateinit var mailService: MailService
 
     override fun addUser(username: String, password: String, email: String, isEnabled: Boolean?, roles: List<RoleNames>?)
     : UserDetailsDTO? {
@@ -35,10 +39,14 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder): UserDetailsSe
                 }
             }
             val repository = userRepository.save(user)
+
+            mailService.sendMessage()
+
             return repository.toUserDetailsDTO()
 
         }catch (ex:Exception){
             ex.printStackTrace()
+            return null
         }
 
         return null
