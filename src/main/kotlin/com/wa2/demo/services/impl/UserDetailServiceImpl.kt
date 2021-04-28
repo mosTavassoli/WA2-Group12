@@ -7,13 +7,14 @@ import com.wa2.demo.repositories.UserRepository
 import com.wa2.demo.services.UserDetailsService
 import com.wa2.demo.utils.RoleNames
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.lang.Exception
 
 @Service
 @Transactional
-class UserDetailServiceImpl(): UserDetailsService {
+class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder): UserDetailsService {
 
     @Autowired
     lateinit var userRepository: UserRepository
@@ -23,7 +24,7 @@ class UserDetailServiceImpl(): UserDetailsService {
         try {
             var user = User()
             user.username = username
-            user.password = password
+            user.password = passwordEncoder.encode(password)
             user.email = email
             if (isEnabled != null) {
                 user.isEnabled = isEnabled

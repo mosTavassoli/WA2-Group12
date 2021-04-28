@@ -49,7 +49,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter(), AuthenticationEntryPoi
         http
             .cors().and().csrf().disable()
 //            .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
-            .authorizeRequests().antMatchers("/wallet/auth/**").permitAll()
+            .authorizeRequests().antMatchers("/auth/**").permitAll()
             .anyRequest().authenticated()
     }
 

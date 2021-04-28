@@ -33,7 +33,7 @@ class JwtUtils {
     fun generateJwtToken(authentication: Authentication): String {
         val userPrincipal: UserDetailsDTO = authentication.principal as UserDetailsDTO
         return Jwts.builder()
-            .setIssuer(userPrincipal.username)
+            .setIssuer(userPrincipal._username)
             .setExpiration(Date(System.currentTimeMillis() + expirationTime.toLong()))
             .signWith(getSigningKey())
             .compact()

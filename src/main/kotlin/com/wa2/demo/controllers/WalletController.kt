@@ -106,43 +106,5 @@ class WalletController {
         }
     }
 
-    @PostMapping(Constants.SIGN_IN)
-    fun authenticateUser(
-        @RequestBody @Valid loginDTO: LoginDTO,
-        bindingResult: BindingResult,
-    ): ResponseEntity<String>? {
-        return try {
-            if (bindingResult.hasErrors()) return ResponseEntity.badRequest()
-                .body("Username Or Password Must not be Null")
-//            ResponseEntity<String>(
-//                Gson().toJson(
-//                    userDetailsService.loadUserByUsername(
-//                        loginDTO.username
-//                    )
-//                ), HttpStatus.OK
-//            )
-            val user = userDetailsService.loadUserByUsername(loginDTO.username)
-            //TODO ---> check the user pass, if Ok continue
-//            if (!user.comparePassword(loginDTO.password)){
-//                return ResponseEntity.badRequest().body("Invalid Password")
-//            }
 
-
-//            val authentication: Authentication = authenticationManager.authenticate(
-//                UsernamePasswordAuthenticationToken(
-//                    loginDTO.username,
-//                    loginDTO.password
-//                )
-//            )
-//            SecurityContextHolder.getContext().setAuthentication(authentication)
-//            val jwt : String = jwtUtils.generateJwtToken(authentication)
-//
-//
-//            return ResponseEntity(Gson().toJson(jwt),HttpStatus.OK)
-
-            return null
-        } catch (ex: Exception) {
-            ResponseEntity<String>(ex.message.toString(), HttpStatus.BAD_REQUEST)
-        }
-    }
 }
