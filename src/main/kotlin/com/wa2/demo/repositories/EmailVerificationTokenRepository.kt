@@ -6,9 +6,10 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface EmailVerificationTokenRepository : CrudRepository<EmailVerificationToken,UUID> {
+interface EmailVerificationTokenRepository : CrudRepository<EmailVerificationToken,String> {
 
-    fun findEmailVerificationTokenByToken(token: UUID): EmailVerificationToken
+    fun findEmailVerificationTokenByToken(token: String): EmailVerificationToken?
+    fun removeEmailVerificationTokenByToken(token: String)
 
 
 }
