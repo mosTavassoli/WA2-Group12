@@ -99,7 +99,6 @@ class AuthenticationController {
 
         println("Received token! " + token)
 
-        UserDetailsService.verifyToken(token)
 
         userDetailsService.verifyToken(token)
 
