@@ -6,10 +6,12 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 
 
@@ -25,6 +27,8 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     lateinit var authEntryPointJwt: AuthEntryPointJwt
 
+    @Autowired
+    lateinit var jwtUtils: JwtUtils
 
     @Bean
     override fun authenticationManager(): AuthenticationManager {
@@ -36,24 +40,13 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
         auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder)
     }
 
-
-//    @Bean
-//    fun jwtAuthTokenFilter(): FilterRegistrationBean<JwtAuthenticationTokenFilter>? {
-//        val registrationBean: FilterRegistrationBean<JwtAuthenticationTokenFilter> =
-//            FilterRegistrationBean<JwtAuthenticationTokenFilter>()
-//        registrationBean.filter = JwtAuthenticationTokenFilter()
-//        return registrationBean
-//    }
-
-
     override fun configure(http: HttpSecurity) {
         http
+            .addFilterBefore(JwtAuthenticationTokenFilter(jwtUtils), UsernamePasswordAuthenticationFilter::class.java)
             .cors().and().csrf().disable()
             .authorizeRequests().antMatchers("/auth/**").permitAll()
             .anyRequest().authenticated().and()
             .exceptionHandling().authenticationEntryPoint(authEntryPointJwt)
-//            .addFilterBefore(JwtAuthenticationTokenFilter(), BasicAuthenticationFilter::class.java)
-
     }
 
 }

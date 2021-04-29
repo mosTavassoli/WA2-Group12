@@ -15,7 +15,7 @@ import java.security.SignatureException
 import java.util.*
 
 
-@Configuration
+@Component
 class JwtUtils {
 
     @Value("\${application.jwt.jwtSecret}")
@@ -23,13 +23,6 @@ class JwtUtils {
 
     @Value("\${application.jwt.jwtExpirationMs}")
     lateinit var expirationTime: String
-
-    // fun for creating Key for JWT token Generator
-//    private fun getSigningKey(): Key? {
-//        val keyBytes = Decoders.BASE64.decode(this.jwtSecret)
-//        return Keys.hmacShaKeyFor(keyBytes)
-//    }
-
 
     fun generateJwtToken(authentication: Authentication): String {
         val userPrincipal: UserDetailsDTO = authentication.principal as UserDetailsDTO
@@ -53,19 +46,15 @@ class JwtUtils {
         } catch (ex: UnsupportedJwtException) {
             throw ex
         }
-        return false
     }
 
     fun getDetailsFromJwtToken(authToken: String): UserDetailsDTO? {
-        val getDetailsFromJwtToken: String =
-            Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(authToken).toString()
+        val getDetailsFromJwtToken =
+            Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(authToken)
 
         val userDetailsDTO = UserDetailsDTO()
-
+        userDetailsDTO._username = getDetailsFromJwtToken.body["iss"].toString()
         return userDetailsDTO
-
     }
-
-
 }
 

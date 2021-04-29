@@ -8,7 +8,6 @@ import com.wa2.demo.security.JwtUtils
 import com.wa2.demo.services.UserDetailsService
 import com.wa2.demo.utils.Constants
 import com.wa2.demo.utils.RoleNames
-import net.minidev.json.JSONObject
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -28,7 +27,7 @@ class AuthenticationController {
     @Autowired
     lateinit var authenticationManager: AuthenticationManager
     @Autowired
-    lateinit var UserDetailsService: UserDetailsService
+    lateinit var userDetailsService: UserDetailsService
     @Autowired
     lateinit var jwtUtils: JwtUtils
 
@@ -44,7 +43,7 @@ class AuthenticationController {
 
             println("Request OK!")
 
-            var UserDetailsDTO: UserDetailsDTO? = UserDetailsService.addUser(
+            var UserDetailsDTO: UserDetailsDTO? = userDetailsService.addUser(
                 item.get("username").toString(),
                 item.get("password").toString(),
                 item.get("email").toString(),
@@ -81,7 +80,7 @@ class AuthenticationController {
                     loginDTO.password
                 )
             )
-            SecurityContextHolder.getContext().setAuthentication(authentication)
+            SecurityContextHolder.getContext().authentication = authentication
             val jwt: String = jwtUtils.generateJwtToken(authentication)
             println("$jwt")
             return ResponseEntity(Gson().toJson(jwt), HttpStatus.OK)
@@ -97,7 +96,7 @@ class AuthenticationController {
     fun registrationConfirmation(@PathVariable token: UUID) {
 
 
-        UserDetailsService.verifyToken(token)
+        userDetailsService.verifyToken(token)
 
 
     }
