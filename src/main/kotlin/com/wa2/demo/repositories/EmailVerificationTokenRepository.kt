@@ -8,7 +8,7 @@ import java.util.*
 @Repository
 interface EmailVerificationTokenRepository : CrudRepository<EmailVerificationToken,UUID> {
 
-    fun findEmailVerificationTokenByToken(token: UUID): EmailVerificationToken
+    fun findEmailVerificationTokenByToken(token: UUID): EmailVerificationToken?
 
 
 }

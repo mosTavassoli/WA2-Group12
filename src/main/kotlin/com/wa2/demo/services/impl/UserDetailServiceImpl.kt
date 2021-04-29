@@ -50,10 +50,12 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
             val repository = userRepository.save(user)
 
             //Save verification token
-            var token : UUID = notificationService.saveToken(username)
+            var token : UUID? = notificationService.saveToken(username)
 
             //Send verification token
-            mailService.sendMessage(email, token)
+            if (token != null) {
+                mailService.sendMessage(email, token)
+            }
 
             return repository.toUserDetailsDTO()
 
@@ -67,7 +69,12 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
 
     override fun verifyToken(token: UUID) {
 
-        notificationService.verifyToken(token)
+        try{
+            notificationService.verifyToken(token)
+
+        }catch(ex: Exception){
+            ex.printStackTrace()
+        }
 
 
     }

@@ -10,7 +10,8 @@ class Constants {
 
         const val REGISTER = "/auth/register"
         const val SIGN_IN = "/auth/signin"
-        const val REGISTRATION_CONFORMATION = "/auth/registrationConfirm?token=<token>"
+        const val REGISTRATION_CONFORMATION = "/auth/registrationConfirm?token={token}"
+        const val REGISTRATION_CONFIRMATION_FOR_MAIL_LINK = "http://localhost:8080/auth/registrationConfirm?token="
 
         // 1 minute = 60000
         const val ExpiryTimeInMilliseconds = 1800000

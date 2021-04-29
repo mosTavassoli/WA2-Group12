@@ -1,6 +1,7 @@
 package com.wa2.demo.services.impl
 
 import com.wa2.demo.services.MailService
+import com.wa2.demo.utils.Constants
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.SimpleMailMessage
@@ -21,7 +22,7 @@ class MailServiceImpl(  ) : MailService {
 
 
         message.setSubject("Confirm your Email")
-        message.setText("Your token: " + token)
+        message.setText("${Constants.REGISTRATION_CONFIRMATION_FOR_MAIL_LINK}${token}")
         message.setTo(email)
 
         try{
