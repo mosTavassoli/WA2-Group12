@@ -2,69 +2,58 @@ package com.wa2.demo.security
 
 import com.wa2.demo.services.impl.UserDetailServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.core.AuthenticationException
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.web.AuthenticationEntryPoint
-import javax.annotation.Resource
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 
 
 @Configuration
-class WebSecurityConfig : WebSecurityConfigurerAdapter(), AuthenticationEntryPoint{
+class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
-    lateinit var userDetailsService: UserDetailsService
+    lateinit var userDetailService: UserDetailServiceImpl
 
     @Autowired
-    lateinit var passwordEncoder:PasswordEncoder
+    lateinit var passwordEncoder: PasswordEncoder
+
+    @Autowired
+    lateinit var authEntryPointJwt: AuthEntryPointJwt
 
 
-
-//    @Bean
-//    override fun userDetailsService(): UserDetailsService {
-//        return super.userDetailsService()
-//    }
-//
-//    @Bean
-//    override fun authenticationManager(): AuthenticationManager {
-//        return super.authenticationManager()
-//    }
+    @Bean
+    override fun authenticationManager(): AuthenticationManager {
+        return super.authenticationManager()
+    }
 
 
     override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder)
+        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder)
     }
+
+
+//    @Bean
+//    fun jwtAuthTokenFilter(): FilterRegistrationBean<JwtAuthenticationTokenFilter>? {
+//        val registrationBean: FilterRegistrationBean<JwtAuthenticationTokenFilter> =
+//            FilterRegistrationBean<JwtAuthenticationTokenFilter>()
+//        registrationBean.filter = JwtAuthenticationTokenFilter()
+//        return registrationBean
+//    }
+
 
     override fun configure(http: HttpSecurity) {
         http
             .cors().and().csrf().disable()
-//            .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
             .authorizeRequests().antMatchers("/auth/**").permitAll()
-            .anyRequest().authenticated()
-    }
+            .anyRequest().authenticated().and()
+            .exceptionHandling().authenticationEntryPoint(authEntryPointJwt)
+//            .addFilterBefore(JwtAuthenticationTokenFilter(), BasicAuthenticationFilter::class.java)
 
-
-//    @Bean
-//    override fun authenticationManagerBean(): AuthenticationManager {
-//        return super.authenticationManagerBean()
-//    }
-
-    override fun commence(
-        request: HttpServletRequest?,
-        response: HttpServletResponse?,
-        authException: AuthenticationException?
-    ) {
-        TODO("Not yet implemented")
     }
 
 }

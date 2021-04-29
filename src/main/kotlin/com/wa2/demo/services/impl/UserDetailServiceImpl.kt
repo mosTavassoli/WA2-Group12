@@ -9,6 +9,8 @@ import com.wa2.demo.services.NotificationService
 import com.wa2.demo.services.UserDetailsService
 import com.wa2.demo.utils.RoleNames
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,7 +19,7 @@ import java.util.*
 
 @Service
 @Transactional
-class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetailsService {
+class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsService {
 
     @Autowired
     lateinit var userRepository: UserRepository
@@ -29,9 +31,14 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
     lateinit var notificationService: NotificationService
 
 
-
-    override fun addUser(username: String, password: String, email: String, isEnabled: Boolean?, roles: List<RoleNames>?)
-    : UserDetailsDTO? {
+    override fun addUser(
+        username: String,
+        password: String,
+        email: String,
+        isEnabled: Boolean?,
+        roles: List<RoleNames>?
+    )
+            : UserDetailsDTO? {
         try {
             var user = User()
             user.username = username
@@ -40,7 +47,7 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
             if (isEnabled != null) {
                 user.isEnabled = isEnabled
             }
-            if(roles!=null) {
+            if (roles != null) {
                 for (role in roles) {
                     user.addRole(role)
                 }
@@ -50,14 +57,14 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
             val repository = userRepository.save(user)
 
             //Save verification token
-            var token : UUID = notificationService.saveToken(username)
+            var token: UUID = notificationService.saveToken(username)
 
             //Send verification token
             mailService.sendMessage(email, token)
 
             return repository.toUserDetailsDTO()
 
-        }catch (ex:Exception){
+        } catch (ex: Exception) {
             ex.printStackTrace()
             return null
         }
@@ -73,17 +80,16 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
     }
 
 
-
     override fun addUserRole(username: String, role: RoleNames) {
         try {
 
             var user = userRepository.findByUsername(username)
-            if(user!=null){
+            if (user != null) {
                 user.addRole(role)
                 userRepository.save(user)
             }
 
-        }catch (ex:Exception){
+        } catch (ex: Exception) {
             ex.printStackTrace()
         }
     }
@@ -92,12 +98,12 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
         try {
 
             var user = userRepository.findByUsername(username)
-            if(user!=null){
+            if (user != null) {
                 user.removeRole(role)
                 userRepository.save(user)
             }
 
-        }catch (ex:Exception){
+        } catch (ex: Exception) {
             ex.printStackTrace()
         }
     }
@@ -106,12 +112,12 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
         try {
 
             var user = userRepository.findByUsername(username)
-            if(user!=null){
+            if (user != null) {
                 user.isEnabled = true
                 userRepository.save(user)
             }
 
-        }catch (ex:Exception){
+        } catch (ex: Exception) {
             ex.printStackTrace()
         }
     }
@@ -120,23 +126,21 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
         try {
 
             var user = userRepository.findByUsername(username)
-            if(user!=null){
+            if (user != null) {
                 user.isEnabled = false
                 userRepository.save(user)
             }
 
-        }catch (ex:Exception){
+        } catch (ex: Exception) {
             ex.printStackTrace()
         }
     }
 
-    override fun loadUserByUsername(username: String): UserDetailsDTO {
-
-        var user = userRepository.findByUsername(username)
-        if(user!=null){
+    override fun loadUserByUsername(username: String?): UserDetails {
+        var user = username?.let { userRepository.findByUsername(it) }
+        if (user != null)
             return user.toUserDetailsDTO()
-        }
         else
-            throw Exception("User not found")
+            throw UsernameNotFoundException("User Not Found")
     }
 }
