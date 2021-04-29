@@ -70,7 +70,11 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder, ): UserDetails
     override fun verifyToken(token: UUID) {
 
         try{
-            notificationService.verifyToken(token)
+            var username : String? = notificationService.verifyToken(token)
+            if(username != null )
+                enableUser(username)
+            else
+                throw Exception("Token not found!")
 
         }catch(ex: Exception){
             ex.printStackTrace()

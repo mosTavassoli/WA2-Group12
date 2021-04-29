@@ -6,7 +6,11 @@ import com.wa2.demo.services.NotificationService
 import com.wa2.demo.utils.Constants
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
+import kotlin.math.abs
 
 @Service
 class NotificationServiceImpl : NotificationService {
@@ -16,15 +20,17 @@ class NotificationServiceImpl : NotificationService {
 
     var emailVerificationToken: EmailVerificationToken? = null
 
+    var differenceBetweenDates: Long? = null
+
     override fun saveToken(username: String) : UUID {
 
         var emailVerificationToken : EmailVerificationToken = EmailVerificationToken()
 
         emailVerificationToken.username= username
         var token : UUID = UUID.randomUUID()
-        emailVerificationToken.token = token
+        emailVerificationToken.token = token.toString()
+        emailVerificationToken.expirationTimestamp = Date()
         //Current time + 30 minutes
-        emailVerificationToken.expirationTimestamp = System.currentTimeMillis() + Constants.ExpiryTimeInMilliseconds
 
 
 
@@ -42,12 +48,7 @@ class NotificationServiceImpl : NotificationService {
 
         println("Before query")
         println("Find row with token" + token)
-        emailVerificationToken = emailVerificationTokenRepository.findEmailVerificationTokenByToken(token)
-
-
-        println( emailVerificationToken )
-
-
+        emailVerificationToken = emailVerificationTokenRepository.findEmailVerificationTokenByToken(token.toString())
 
         if(emailVerificationToken == null){
 
@@ -56,18 +57,33 @@ class NotificationServiceImpl : NotificationService {
 
         }
 
-        println( "Time passed" + ((System.currentTimeMillis() - emailVerificationToken?.expirationTimestamp!!) / 60000) )
+        emailVerificationTokenRepository.removeEmailVerificationTokenByToken(token.toString())
+
+        var dateFormatter : SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+
+        var today : Date = Date()
+        var expiration : Date = dateFormatter.parse(emailVerificationToken?.expirationTimestamp.toString())
+
+        //In minutes
+        differenceBetweenDates = ((abs(expiration.time - today.time)) / (1000 * 60))
 
 
-        //TODO Throw exceptions here
-        if(emailVerificationToken!!.expirationTimestamp == null)
-            return null
-        else
-        if( System.currentTimeMillis() - emailVerificationToken?.expirationTimestamp!! < Constants.ExpiryTimeInMilliseconds  )
+        println("Difference: " +  differenceBetweenDates)
+//        println( "Difference: " +  (Date().time - dateFormatter.parse(emailVerificationToken.expirationTimestamp.toString()) )  )
+
+
+        if(differenceBetweenDates!! < Constants.ExpiryTimeInMinutes){
+
             return emailVerificationToken!!.username
+
+        }
         else
             return null
 
+
+
+
+        return null
 
     }
 
