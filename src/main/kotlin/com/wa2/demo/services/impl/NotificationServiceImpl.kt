@@ -6,9 +6,7 @@ import com.wa2.demo.services.NotificationService
 import com.wa2.demo.utils.Constants
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.*
 import kotlin.math.abs
 
