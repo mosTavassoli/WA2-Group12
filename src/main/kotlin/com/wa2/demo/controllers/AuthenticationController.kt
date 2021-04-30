@@ -109,14 +109,9 @@ class AuthenticationController {
         }
     }
 
-
-    //<<<<<<< HEAD
-//    @GetMapping(Constants.REGISTRATION_CONFORMATION)
-//    fun registrationConfirmation(@PathVariable token: UUID) {
-//=======
-//    @GetMapping(Constants.REGISTRATION_CONFORMATION)
-    @GetMapping("/auth/registrationConfirm")
-    fun registrationConfirmation(@RequestParam token: UUID) {
+    @GetMapping(Constants.REGISTRATION_CONFORMATION)
+    fun registrationConfirmation(@RequestParam token: UUID){
+        //TODO remove printlns
         println("Received token! " + token)
         userDetailsService.verifyToken(token)
     }
