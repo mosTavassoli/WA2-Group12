@@ -1,14 +1,10 @@
 package com.wa2.demo.security
 
-import io.jsonwebtoken.Jwts
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
-import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import java.security.SignatureException
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -22,19 +18,25 @@ class JwtAuthenticationTokenFilter(val jwtUtils: JwtUtils) : OncePerRequestFilte
         filterChain: FilterChain
     ) {
         val authHeader: String? = request.getHeader("Authorization")
+        if (authHeader?.startsWith("Bearer ") == true) {
+            val headerArr: List<String> = authHeader.split(' ')
+            val jwt: String = headerArr[1]
+            if (jwtUtils.validateJwtToken(jwt)) {
+                val userDetailsDTO = jwtUtils.getDetailsFromJwtToken(jwt)
 
-        val headerArr: List<String>? = authHeader?.split(' ')
-        val jwt: String? = headerArr?.get(1)
-        if (jwt?.let { jwtUtils.validateJwtToken(it) } == true) {
-            val userDetailsDTO = jwtUtils.getDetailsFromJwtToken(jwt)
-
-            val authentication = UsernamePasswordAuthenticationToken( userDetailsDTO,
-                null,
-                userDetailsDTO?.authorities )
-            authentication.details = WebAuthenticationDetailsSource() .buildDetails(request)
-            SecurityContextHolder.getContext().authentication = authentication
+                val authentication = UsernamePasswordAuthenticationToken(
+                    userDetailsDTO,
+                    null,
+                    userDetailsDTO?.authorities
+                )
+                authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
+                SecurityContextHolder.getContext().authentication = authentication
+            } else {
+                SecurityContextHolder.clearContext()
+            }
+        } else {
+            SecurityContextHolder.clearContext()
         }
         filterChain.doFilter(request, response)
-
     }
 }
