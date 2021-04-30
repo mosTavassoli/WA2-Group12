@@ -2,20 +2,13 @@ package com.wa2.demo.controllers
 
 import com.google.gson.*
 import com.wa2.demo.dto.*
-//import com.wa2.demo.security.JwtUtils
 import com.wa2.demo.services.TransactionService
-import com.wa2.demo.services.UserDetailsService
 import com.wa2.demo.services.WalletService
 import com.wa2.demo.utils.Constants
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-//import org.springframework.security.authentication.AuthenticationManager
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-//import org.springframework.security.core.Authentication
-//import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.validation.Valid

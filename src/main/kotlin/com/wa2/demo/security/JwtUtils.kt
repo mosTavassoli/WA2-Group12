@@ -2,25 +2,25 @@ package com.wa2.demo.security
 
 
 import com.wa2.demo.dto.UserDetailsDTO
+
 import com.wa2.demo.dto.toUserDetailsDTO
 import com.wa2.demo.repositories.UserRepository
-import com.wa2.demo.services.impl.UserDetailServiceImpl
 import io.jsonwebtoken.*
-import io.jsonwebtoken.io.Decoders
-import io.jsonwebtoken.security.Keys
+import io.jsonwebtoken.security.SignatureException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Configuration
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.stereotype.Component
-import java.security.Key
-import java.security.SignatureException
 import java.util.*
+import javax.servlet.http.HttpServletRequest
 
 
 @Component
 class JwtUtils {
+
+    @Autowired
+    lateinit var httpServletRequest: HttpServletRequest
 
     @Value("\${application.jwt.jwtSecret}")
     lateinit var jwtSecret: String
@@ -44,15 +44,18 @@ class JwtUtils {
         try {
             Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(authToken)
             return true
-        } catch (ex: ExpiredJwtException) {
-            throw ex
         } catch (ex: SignatureException) {
-            throw ex
+            httpServletRequest.setAttribute("Invalid JWT signature", ex.message)
         } catch (ex: MalformedJwtException) {
-            throw ex
+            httpServletRequest.setAttribute("Invalid JWT token", ex.message)
+        } catch (ex: ExpiredJwtException) {
+            httpServletRequest.setAttribute("JWT token is expired", ex.message)
         } catch (ex: UnsupportedJwtException) {
-            throw ex
+            httpServletRequest.setAttribute("JWT token is unsupported", ex.message)
+        } catch (ex: IllegalArgumentException) {
+            httpServletRequest.setAttribute("JWT claims string is empty", ex.message)
         }
+        return false
     }
 
     fun getDetailsFromJwtToken(authToken: String): UserDetailsDTO? {

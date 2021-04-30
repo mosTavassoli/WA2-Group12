@@ -4,7 +4,7 @@ import java.util.*
 
 interface NotificationService {
 
-    fun saveToken(username: String): UUID
+    fun saveToken(username: String): UUID?
     fun verifyToken(token: UUID): String?
 
 }
