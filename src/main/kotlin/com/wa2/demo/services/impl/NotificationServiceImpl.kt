@@ -24,7 +24,6 @@ class NotificationServiceImpl : NotificationService {
 
         var emailVerificationToken : EmailVerificationToken = EmailVerificationToken()
 
-        println("saving username: " + username)
 
         emailVerificationToken.username= username.replace( "\"" , "" )
         var token : UUID = UUID.randomUUID()

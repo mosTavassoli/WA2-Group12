@@ -43,7 +43,6 @@ class AuthenticationController {
     lateinit var userRepository: UserRepository
 
 
-    val EMAIL_REGEX = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})";
 
     @PostMapping(Constants.REGISTER)
     fun register(@RequestBody @Valid body: String): ResponseEntity<String> {
@@ -52,7 +51,6 @@ class AuthenticationController {
 
         if (checkRegistrationRequest(item)) {
 
-            println("Request OK!")
 
             var userDetailsDTO: UserDetailsDTO? = userDetailsService.addUser(
                 item.get("username").toString(),
@@ -66,12 +64,10 @@ class AuthenticationController {
             else
                 return ResponseEntity(Gson().toJson("Username or email already in use"), HttpStatus.CONFLICT)
         } else {
-            println("Request not OK")
             return ResponseEntity(Gson().toJson("Request not valid"), HttpStatus.BAD_REQUEST)
         }
 
-        println(item)
-        println(item.get("password") == null)
+
 
 
     }
@@ -95,9 +91,9 @@ class AuthenticationController {
             val userDetailsDTO = userRepository.findByUsername(loginDTO.username)?.toUserDetailsDTO()
             if (userDetailsDTO?.isEnabled == true) {
                 SecurityContextHolder.getContext().authentication = authentication
-                println("authorities: ${authentication.authorities}")
+//                println("authorities: ${authentication.authorities}")
                 val jwt: String = jwtUtils.generateJwtToken(authentication)
-                println("$jwt")
+//                println("$jwt")
                 return ResponseEntity(Gson().toJson(jwt), HttpStatus.OK)
             } else {
                 ResponseEntity<String>("User is not enabled!", HttpStatus.BAD_REQUEST)
@@ -111,8 +107,6 @@ class AuthenticationController {
 
     @GetMapping(Constants.REGISTRATION_CONFORMATION)
     fun registrationConfirmation(@RequestParam token: UUID){
-        //TODO remove printlns
-        println("Received token! " + token)
         userDetailsService.verifyToken(token)
     }
 
@@ -122,7 +116,7 @@ class AuthenticationController {
             return false
         if (item.get("username") == null)
             return false
-        if (item.get("email") == null || !checkEmail(item.get("email").toString()))
+        if (item.get("email") == null )
             return false
         if (item.get("name") == null)
             return false
@@ -141,12 +135,7 @@ class AuthenticationController {
 
     }
 
-    fun checkEmail(email: String): Boolean {
-        println("Email is valid:" + EMAIL_REGEX.toRegex().matches(email))
-        //TODO(Make regex work!)
-//        return EMAIL_REGEX.toRegex().matches(email)
-        return true
-    }
+
 
     @PostMapping("/Authentication/enableUser")
     fun enableUser(@RequestParam(name = "username") username: String) {
