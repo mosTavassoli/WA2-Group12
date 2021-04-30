@@ -4,6 +4,8 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.wa2.demo.dto.LoginDTO
 import com.wa2.demo.dto.UserDetailsDTO
+import com.wa2.demo.dto.toUserDetailsDTO
+import com.wa2.demo.repositories.UserRepository
 import com.wa2.demo.security.JwtUtils
 import com.wa2.demo.services.UserDetailsService
 import com.wa2.demo.utils.Constants
@@ -25,21 +27,20 @@ import java.util.ArrayList
 import org.springframework.security.core.GrantedAuthority
 
 
-
-
-
-
-
-
 @RestController
 class AuthenticationController {
 
     @Autowired
     lateinit var authenticationManager: AuthenticationManager
+
     @Autowired
     lateinit var userDetailsService: UserDetailsService
+
     @Autowired
     lateinit var jwtUtils: JwtUtils
+
+    @Autowired
+    lateinit var userRepository: UserRepository
 
 
     val EMAIL_REGEX = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})";
@@ -90,11 +91,17 @@ class AuthenticationController {
                     loginDTO.password
                 )
             )
-            SecurityContextHolder.getContext().authentication = authentication
-            println("authorities: ${authentication.authorities}")
-            val jwt: String = jwtUtils.generateJwtToken(authentication)
-            println("$jwt")
-            return ResponseEntity(Gson().toJson(jwt), HttpStatus.OK)
+
+            val userDetailsDTO = userRepository.findByUsername(loginDTO.username)?.toUserDetailsDTO()
+            if (userDetailsDTO?.isEnabled == true) {
+                SecurityContextHolder.getContext().authentication = authentication
+                println("authorities: ${authentication.authorities}")
+                val jwt: String = jwtUtils.generateJwtToken(authentication)
+                println("$jwt")
+                return ResponseEntity(Gson().toJson(jwt), HttpStatus.OK)
+            } else {
+                ResponseEntity<String>("User is not enabled!", HttpStatus.BAD_REQUEST)
+            }
 
 
         } catch (ex: Exception) {
@@ -102,10 +109,8 @@ class AuthenticationController {
         }
     }
 
-
     @GetMapping(Constants.REGISTRATION_CONFORMATION)
     fun registrationConfirmation(@RequestParam token: UUID){
-
         //TODO remove printlns
         println("Received token! " + token)
         userDetailsService.verifyToken(token)
