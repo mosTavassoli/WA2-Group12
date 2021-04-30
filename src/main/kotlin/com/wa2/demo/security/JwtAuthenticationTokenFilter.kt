@@ -28,9 +28,9 @@ class JwtAuthenticationTokenFilter(val jwtUtils: JwtUtils) : OncePerRequestFilte
         if (jwt?.let { jwtUtils.validateJwtToken(it) } == true) {
             val userDetailsDTO = jwtUtils.getDetailsFromJwtToken(jwt)
 
-            val authentication = UsernamePasswordAuthenticationToken( userDetailsDTO,
+            val authentication = UsernamePasswordAuthenticationToken(userDetailsDTO,
                 null,
-                userDetailsDTO?.authorities )
+                userDetailsDTO?.authorities)
             authentication.details = WebAuthenticationDetailsSource() .buildDetails(request)
             SecurityContextHolder.getContext().authentication = authentication
         }

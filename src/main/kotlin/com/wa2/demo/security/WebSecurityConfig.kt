@@ -45,6 +45,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .addFilterBefore(JwtAuthenticationTokenFilter(jwtUtils), UsernamePasswordAuthenticationFilter::class.java)
             .cors().and().csrf().disable()
             .authorizeRequests().antMatchers("/auth/**").permitAll()
+//            .antMatchers("/Authentication/enableUser").hasRole("ADMIN")
             .anyRequest().authenticated().and()
             .exceptionHandling().authenticationEntryPoint(authEntryPointJwt)
     }

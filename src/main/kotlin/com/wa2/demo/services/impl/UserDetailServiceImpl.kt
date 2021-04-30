@@ -9,6 +9,9 @@ import com.wa2.demo.services.NotificationService
 import com.wa2.demo.services.UserDetailsService
 import com.wa2.demo.utils.RoleNames
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Role
+import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -30,7 +33,6 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
     @Autowired
     lateinit var notificationService: NotificationService
 
-
     override fun addUser(
         username: String,
         password: String,
@@ -40,7 +42,7 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
     )
             : UserDetailsDTO? {
         try {
-            var user = User()
+            val user = User()
             user.username = username
             user.password = passwordEncoder.encode(password)
             user.email = email
@@ -73,22 +75,17 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
     }
 
     override fun verifyToken(token: UUID) {
-
         notificationService.verifyToken(token)
-
-
     }
 
 
     override fun addUserRole(username: String, role: RoleNames) {
         try {
-
-            var user = userRepository.findByUsername(username)
+            val user = userRepository.findByUsername(username)
             if (user != null) {
                 user.addRole(role)
                 userRepository.save(user)
             }
-
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -97,7 +94,7 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
     override fun removeUserRole(username: String, role: RoleNames) {
         try {
 
-            var user = userRepository.findByUsername(username)
+            val user = userRepository.findByUsername(username)
             if (user != null) {
                 user.removeRole(role)
                 userRepository.save(user)
@@ -108,10 +105,11 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
         }
     }
 
+//    @PreAuthorize("hasRole('ADMIN')")
+    @Secured("ROLE_ADMIN")
     override fun enableUser(username: String) {
         try {
-
-            var user = userRepository.findByUsername(username)
+            val user = userRepository.findByUsername(username)
             if (user != null) {
                 user.isEnabled = true
                 userRepository.save(user)
@@ -124,8 +122,7 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
 
     override fun disableUser(username: String) {
         try {
-
-            var user = userRepository.findByUsername(username)
+            val user = userRepository.findByUsername(username)
             if (user != null) {
                 user.isEnabled = false
                 userRepository.save(user)
@@ -137,7 +134,7 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
     }
 
     override fun loadUserByUsername(username: String?): UserDetails {
-        var user = username?.let { userRepository.findByUsername(it) }
+        val user = username?.let { userRepository.findByUsername(it) }
         if (user != null)
             return user.toUserDetailsDTO()
         else

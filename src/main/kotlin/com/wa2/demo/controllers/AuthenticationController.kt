@@ -19,6 +19,16 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.validation.Valid
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import java.util.ArrayList
+
+import org.springframework.security.core.GrantedAuthority
+
+
+
+
+
+
 
 
 @RestController
@@ -43,15 +53,15 @@ class AuthenticationController {
 
             println("Request OK!")
 
-            var UserDetailsDTO: UserDetailsDTO? = userDetailsService.addUser(
+            var userDetailsDTO: UserDetailsDTO? = userDetailsService.addUser(
                 item.get("username").toString(),
                 item.get("password").toString(),
                 item.get("email").toString(),
                 false,
                 listOf<RoleNames>(RoleNames.CUSTOMER)
             )
-            if (UserDetailsDTO != null)
-                return ResponseEntity(Gson().toJson(UserDetailsDTO), HttpStatus.CREATED)
+            if (userDetailsDTO != null)
+                return ResponseEntity(Gson().toJson(userDetailsDTO), HttpStatus.CREATED)
             else
                 return ResponseEntity(Gson().toJson("Username or email already in use"), HttpStatus.CONFLICT)
         } else {
@@ -81,6 +91,7 @@ class AuthenticationController {
                 )
             )
             SecurityContextHolder.getContext().authentication = authentication
+            println("authorities: ${authentication.authorities}")
             val jwt: String = jwtUtils.generateJwtToken(authentication)
             println("$jwt")
             return ResponseEntity(Gson().toJson(jwt), HttpStatus.OK)
@@ -94,11 +105,7 @@ class AuthenticationController {
 
     @GetMapping(Constants.REGISTRATION_CONFORMATION)
     fun registrationConfirmation(@PathVariable token: UUID) {
-
-
         userDetailsService.verifyToken(token)
-
-
     }
 
     fun checkRegistrationRequest(item: JsonObject): Boolean {
@@ -127,13 +134,25 @@ class AuthenticationController {
     }
 
     fun checkEmail(email: String): Boolean {
-
         println("Email is valid:" + EMAIL_REGEX.toRegex().matches(email))
         //TODO(Make regex work!)
 //        return EMAIL_REGEX.toRegex().matches(email)
         return true
-
     }
 
+    @PostMapping("/Authentication/enableUser")
+    fun enableUser(@RequestParam(name = "username") username: String) {
+//        val authorities =
+//            SecurityContextHolder.getContext().authentication.authorities as Collection<SimpleGrantedAuthority>
+        try {
+            userDetailsService.enableUser(username)
+        } catch (ex: AccessDeniedException) {
+            throw ex
+        }
+    }
 
+    @PostMapping("/Authentication/disableUser")
+    fun disableUser(@RequestParam(name = "username") username: String) {
+        userDetailsService.disableUser(username)
+    }
 }
