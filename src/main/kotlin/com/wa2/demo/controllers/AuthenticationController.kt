@@ -92,11 +92,10 @@ class AuthenticationController {
     }
 
 
-//    @GetMapping(Constants.REGISTRATION_CONFORMATION)
-    @GetMapping("/auth/registrationConfirm")
+    @GetMapping(Constants.REGISTRATION_CONFORMATION)
     fun registrationConfirmation(@RequestParam token: UUID){
 
-
+        //TODO remove printlns
         println("Received token! " + token)
 
 
