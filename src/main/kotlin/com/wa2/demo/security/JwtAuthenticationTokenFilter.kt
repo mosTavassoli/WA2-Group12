@@ -24,13 +24,17 @@ class JwtAuthenticationTokenFilter(val jwtUtils: JwtUtils) : OncePerRequestFilte
             if (jwtUtils.validateJwtToken(jwt)) {
                 val userDetailsDTO = jwtUtils.getDetailsFromJwtToken(jwt)
 
-                val authentication = UsernamePasswordAuthenticationToken(
-                    userDetailsDTO,
-                    null,
-                    userDetailsDTO?.authorities
-                )
-                authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
-                SecurityContextHolder.getContext().authentication = authentication
+                if (userDetailsDTO?.isEnabled == true) {
+                    val authentication = UsernamePasswordAuthenticationToken(
+                        userDetailsDTO,
+                        null,
+                        userDetailsDTO.authorities
+                    )
+                    authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
+                    SecurityContextHolder.getContext().authentication = authentication
+                } else {
+                    throw Exception("User is not enabled!")
+                }
             } else {
                 SecurityContextHolder.clearContext()
             }

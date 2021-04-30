@@ -12,6 +12,7 @@ class UserDetailsDTO : UserDetails {
     var userId: Long? = null
     var email: String? = null
     var roles: String? = null
+    var _isEnabled: Boolean = false
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         if (roles?.contains("ADMIN") == true) {
@@ -41,8 +42,10 @@ class UserDetailsDTO : UserDetails {
     }
 
     override fun isEnabled(): Boolean {
-        return true
+        return _isEnabled
     }
+
+
 }
 
 fun User.toUserDetailsDTO(): UserDetailsDTO {
@@ -52,5 +55,6 @@ fun User.toUserDetailsDTO(): UserDetailsDTO {
     ud.userId = userId
     ud.email = email
     ud.roles = roles
+    ud._isEnabled = isEnabled
     return ud
 }
