@@ -43,9 +43,9 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
             : UserDetailsDTO? {
         try {
             val user = User()
-            user.username = username
+            user.username = username.replace("\"","")
             user.password = passwordEncoder.encode(password)
-            user.email = email
+            user.email = email.replace("\"","")
             if (isEnabled != null) {
                 user.isEnabled = isEnabled
             }
