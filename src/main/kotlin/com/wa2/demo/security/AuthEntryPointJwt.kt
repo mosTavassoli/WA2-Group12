@@ -19,6 +19,7 @@ class AuthEntryPointJwt : AuthenticationEntryPoint {
         val expiredTKN = request?.getAttribute("JWT token is expired")
         val unsupportedTKN = request?.getAttribute("JWT token is unsupported")
         val emptySTR = request?.getAttribute("JWT claims string is empty")
+        val authFail = request?.getAttribute(("Cannot set user authentication"))
 
         when {
             invalidSIN != null -> {
@@ -40,6 +41,10 @@ class AuthEntryPointJwt : AuthenticationEntryPoint {
             emptySTR != null -> {
                 response?.setHeader("UNAUTHORIZED", "FormBased")
                 response?.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT claims string is empty")
+            }
+            authFail != null ->{
+                response?.setHeader("UNAUTHORIZED", "FormBased")
+                response?.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Cannot set user authentication")
             }
             else -> {
                 response?.setHeader("UNAUTHORIZED", "FormBased")

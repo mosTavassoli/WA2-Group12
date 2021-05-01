@@ -21,10 +21,6 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.validation.Valid
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import java.util.ArrayList
-
-import org.springframework.security.core.GrantedAuthority
 
 
 @RestController
@@ -43,15 +39,10 @@ class AuthenticationController {
     lateinit var userRepository: UserRepository
 
 
-
     @PostMapping(Constants.REGISTER)
     fun register(@RequestBody @Valid body: String): ResponseEntity<String> {
-
         val item: JsonObject = Gson().fromJson(body, JsonObject::class.java)
-
         if (checkRegistrationRequest(item)) {
-
-
             var userDetailsDTO: UserDetailsDTO? = userDetailsService.addUser(
                 item.get("username").toString(),
                 item.get("password").toString(),
@@ -66,10 +57,6 @@ class AuthenticationController {
         } else {
             return ResponseEntity(Gson().toJson("Request not valid"), HttpStatus.BAD_REQUEST)
         }
-
-
-
-
     }
 
     @PostMapping(Constants.SIGN_IN)
@@ -80,14 +67,12 @@ class AuthenticationController {
         return try {
             if (bindingResult.hasErrors()) return ResponseEntity.badRequest()
                 .body("Username Or Password Must not be Null")
-
             val authentication: Authentication = authenticationManager.authenticate(
                 UsernamePasswordAuthenticationToken(
                     loginDTO.username,
                     loginDTO.password
                 )
             )
-
             val userDetailsDTO = userRepository.findByUsername(loginDTO.username)?.toUserDetailsDTO()
             if (userDetailsDTO?.isEnabled == true) {
                 SecurityContextHolder.getContext().authentication = authentication
@@ -96,17 +81,15 @@ class AuthenticationController {
 //                println("$jwt")
                 return ResponseEntity(Gson().toJson(jwt), HttpStatus.OK)
             } else {
-                ResponseEntity<String>("User is not enabled!", HttpStatus.BAD_REQUEST)
+                ResponseEntity<String>("The User is not enabled!", HttpStatus.BAD_REQUEST)
             }
-
-
         } catch (ex: Exception) {
-            ResponseEntity<String>(ex.message.toString(), HttpStatus.BAD_REQUEST)
+            ResponseEntity<String>("The Username Or Password was Wrong!", HttpStatus.BAD_REQUEST)
         }
     }
 
     @GetMapping(Constants.REGISTRATION_CONFORMATION)
-    fun registrationConfirmation(@RequestParam token: UUID){
+    fun registrationConfirmation(@RequestParam token: UUID) {
         userDetailsService.verifyToken(token)
     }
 
@@ -116,7 +99,7 @@ class AuthenticationController {
             return false
         if (item.get("username") == null)
             return false
-        if (item.get("email") == null )
+        if (item.get("email") == null)
             return false
         if (item.get("name") == null)
             return false
@@ -134,8 +117,6 @@ class AuthenticationController {
         return true
 
     }
-
-
 
     @PostMapping("/Authentication/enableUser")
     fun enableUser(@RequestParam(name = "username") username: String) {
