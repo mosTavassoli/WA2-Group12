@@ -1,5 +1,9 @@
 package com.wa2.demo
 
+import com.wa2.demo.domain.EmailVerificationToken
+import com.wa2.demo.repositories.EmailVerificationTokenRepository
+import com.wa2.demo.utils.Constants
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -7,16 +11,24 @@ import org.springframework.context.annotation.Bean
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.JavaMailSenderImpl
+import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
 
 
 //@SpringBootApplication(exclude = [SecurityAutoConfiguration::class])
 @SpringBootApplication
+@EnableScheduling
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 class DemoApplication{
+
+    @Autowired
+    lateinit var emailVerificationTokenRepository: EmailVerificationTokenRepository
 
     @Value("\${spring.mail.host}")
     lateinit var host: String
@@ -84,6 +96,28 @@ class DemoApplication{
         return SimpleMailMessage()
 
     }
+
+    @Scheduled(fixedRate =  60 * 60 * 1000)
+    fun removeExpiredTokens() {
+        //Remove expired timestamps
+        var dateFormatter : SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+
+
+        var emailVerificationTokenList : List<EmailVerificationToken> = emailVerificationTokenRepository.findAll()
+
+
+        emailVerificationTokenList.forEach {
+            var expiration: Date = dateFormatter.parse(it.expirationTimestamp.toString())
+            var today : Date = Date()
+            var differenceBetweenDates: Long = ((abs(expiration.time - today.time)) / (1000 * 60))
+            if( differenceBetweenDates!! < Constants.ExpiryTimeInMinutes )
+                emailVerificationTokenRepository.removeEmailVerificationTokenByToken(it.token.toString())
+
+        }
+
+
+    }
+
 
 }
 

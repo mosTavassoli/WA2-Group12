@@ -67,18 +67,7 @@ class NotificationServiceImpl : NotificationService {
 
         if(differenceBetweenDates!! < Constants.ExpiryTimeInMinutes){
 
-            //Remove expired timestamps
 
-            var emailVerificationTokenList : List<EmailVerificationToken> = emailVerificationTokenRepository.findAll()
-
-
-            emailVerificationTokenList.forEach {
-                expiration = dateFormatter.parse(it.expirationTimestamp.toString())
-                differenceBetweenDates = ((abs(expiration.time - today.time)) / (1000 * 60))
-                if( differenceBetweenDates!! < Constants.ExpiryTimeInMinutes )
-                    emailVerificationTokenRepository.removeEmailVerificationTokenByToken(it.token.toString())
-
-            }
 
             return emailVerificationToken!!.username
 
