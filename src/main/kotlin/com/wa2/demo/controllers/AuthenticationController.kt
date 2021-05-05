@@ -2,6 +2,7 @@ package com.wa2.demo.controllers
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.wa2.demo.dto.CustomerDTO
 import com.wa2.demo.dto.LoginDTO
 import com.wa2.demo.dto.UserDetailsDTO
 import com.wa2.demo.dto.toUserDetailsDTO
@@ -48,10 +49,18 @@ class AuthenticationController {
                 item.get("password").toString(),
                 item.get("email").toString(),
                 false,
-                listOf<RoleNames>(RoleNames.CUSTOMER)
+                listOf<RoleNames>(RoleNames.CUSTOMER),
+                item.get("name").toString().replace("\"",""),
+                item.get("surname").toString().replace("\"",""),
+                item.get("address").toString().replace("\"","")
             )
-            if (userDetailsDTO != null)
+            if (userDetailsDTO != null){
+
+
+
                 return ResponseEntity(Gson().toJson(userDetailsDTO), HttpStatus.CREATED)
+
+            }
             else
                 return ResponseEntity(Gson().toJson("Username or email already in use"), HttpStatus.CONFLICT)
         } else {
