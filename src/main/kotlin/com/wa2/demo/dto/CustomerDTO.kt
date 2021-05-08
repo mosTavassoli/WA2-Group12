@@ -1,11 +1,13 @@
 package com.wa2.demo.dto
 
 import com.wa2.demo.domain.Customer
+import com.wa2.demo.domain.User
 import com.wa2.demo.domain.Wallet
 
 
 data class CustomerDTO(
     var customerId: Long? = null,
+    var user: User? = null,
     var name: String? = null,
     var surname: String? = null,
     var deliveryAddress: String? = null,
@@ -15,6 +17,7 @@ data class CustomerDTO(
     fun toCustomerEntity(): Customer {
         val customer = Customer()
         customer.customerId = customerId
+        customer.user = user
         customer.deliveryAddress = deliveryAddress
         customer.email = email
         customer.name = name
@@ -26,6 +29,7 @@ data class CustomerDTO(
 
 fun Customer.toCustomerDTO(): CustomerDTO = CustomerDTO(
     customerId,
+    user,
     name,
     surname,
     deliveryAddress,

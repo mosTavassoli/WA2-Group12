@@ -50,11 +50,11 @@ class WalletController {
     fun createTransaction(@PathVariable walletId: Long, @RequestBody body: String): ResponseEntity<String> {
         return try {
             val item: JsonObject = Gson().fromJson(body, JsonObject::class.java)
-            var payer = WalletDTO()
+            var payer: WalletDTO? = WalletDTO()
             var payee = WalletDTO()
             var transactionDTO = TransactionDTO()
             if (!item.get("payer").isJsonNull) {
-                payer = WalletDTO(item.get("payer").asLong)
+                payer = walletService.getWalletById(item.get("payer").asLong)
                 payee = WalletDTO(walletId)
                 transactionDTO = TransactionDTO(
                     null, payee, payer, Date(),

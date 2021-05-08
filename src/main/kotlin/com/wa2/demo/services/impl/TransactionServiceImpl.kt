@@ -2,11 +2,14 @@ package com.wa2.demo.services.impl
 
 import com.wa2.demo.dto.TransactionDTO
 import com.wa2.demo.domain.Transaction
+import com.wa2.demo.dto.UserDetails
 import com.wa2.demo.dto.toTransactionDTO
 import com.wa2.demo.repositories.TransactionRepository
 import com.wa2.demo.repositories.WalletRepository
 import com.wa2.demo.services.TransactionService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -15,6 +18,14 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.context.SecurityContext
+
+
+
+
+
+
 
 @Service
 @Transactional
@@ -27,27 +38,33 @@ class TransactionServiceImpl(
     @Autowired lateinit var walletRepository: WalletRepository
 
 
+    @PreAuthorize("authentication.principal.username==#transactionDTO.payerWallet.customer.user.username")
     override fun createTransaction(transactionDTO: TransactionDTO): Int? {
         try {
+//            val securityContext = SecurityContextHolder.getContext()
+//            val username = securityContext.authentication.name
 //            val walletPayer: Wallet = transactionDTO.payerWallet?.walletId.let { walletRepository.findByWalletId(it!!) }
 //            val walletPayee: Wallet = transactionDTO.payeeWallet?.walletId.let { walletRepository.findByWalletId(it!!) }
             val walletPayerOp = walletRepository.findById(transactionDTO.payerWallet?.walletId!!)
             val walletPayeeOp = walletRepository.findById(transactionDTO.payeeWallet?.walletId!!)
             if (walletPayeeOp.isPresent && walletPayerOp.isPresent) {
                 val walletPayer = walletPayerOp.get()
-                val walletPayee = walletPayeeOp.get()
-                if (walletPayee != walletPayer) {
-                    val isBalanceGreaterThanZero: BigDecimal? =
-                        walletPayer.currentAmount?.subtract(transactionDTO.amount)
-                    if (isBalanceGreaterThanZero?.compareTo(BigDecimal.ZERO)!! >= 0) {
-                        walletPayer.currentAmount = walletPayer.currentAmount?.subtract(transactionDTO.amount)
-                        walletPayee.currentAmount = walletPayee.currentAmount?.add(transactionDTO.amount)
-                        walletRepository.save(walletPayee)
-                        walletRepository.save(walletPayer)
-                        val transaction: Transaction = transactionRepository.save(transactionDTO.toTransactionEntity())
-                        return transaction.transactionId?.toInt()
-                    }else throw Exception("Error: Your balance is not Enough for performing this Transaction.")
-                } else throw Exception("Error: Payee and Payer are the same.")
+//                if (walletPayer.customer?.user?.username == username) {
+                    val walletPayee = walletPayeeOp.get()
+                    if (walletPayee != walletPayer) {
+                        val isBalanceGreaterThanZero: BigDecimal? =
+                            walletPayer.currentAmount?.subtract(transactionDTO.amount)
+                        if (isBalanceGreaterThanZero?.compareTo(BigDecimal.ZERO)!! >= 0) {
+                            walletPayer.currentAmount = walletPayer.currentAmount?.subtract(transactionDTO.amount)
+                            walletPayee.currentAmount = walletPayee.currentAmount?.add(transactionDTO.amount)
+                            walletRepository.save(walletPayee)
+                            walletRepository.save(walletPayer)
+                            val transaction: Transaction =
+                                transactionRepository.save(transactionDTO.toTransactionEntity())
+                            return transaction.transactionId?.toInt()
+                        } else throw Exception("Error: Your balance is not Enough for performing this Transaction.")
+                    } else throw Exception("Error: Payee and Payer are the same.")
+//                } else throw Exception("Error: Access to payer wallet denied.")
             } else throw Exception("Error: Payee or Payer does not exist.")
         } catch (e: Exception) {
             throw e
