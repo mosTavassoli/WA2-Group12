@@ -9,6 +9,6 @@ interface EmailVerificationTokenRepository : CrudRepository<EmailVerificationTok
 
     fun findEmailVerificationTokenByToken(token: String): EmailVerificationToken?
     fun removeEmailVerificationTokenByToken(token: String)
-
+    override fun findAll(): List<EmailVerificationToken>
 
 }

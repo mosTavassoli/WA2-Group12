@@ -1,6 +1,5 @@
 package com.wa2.demo.dto
 
-import com.sun.istack.NotNull
 import javax.validation.constraints.NotBlank
 
 class LoginDTO(

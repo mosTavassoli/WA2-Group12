@@ -1,8 +1,10 @@
 package com.wa2.demo.services.impl
 
 import com.wa2.demo.domain.User
+import com.wa2.demo.dto.CustomerDTO
 import com.wa2.demo.dto.UserDetailsDTO
 import com.wa2.demo.dto.toUserDetailsDTO
+import com.wa2.demo.repositories.CustomerRepository
 import com.wa2.demo.repositories.UserRepository
 import com.wa2.demo.services.MailService
 import com.wa2.demo.services.NotificationService
@@ -33,19 +35,25 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
     @Autowired
     lateinit var notificationService: NotificationService
 
+    @Autowired
+    lateinit var customerRepository: CustomerRepository
+
     override fun addUser(
         username: String,
         password: String,
         email: String,
         isEnabled: Boolean?,
-        roles: List<RoleNames>?
+        roles: List<RoleNames>?,
+        name: String,
+        surname: String,
+        address: String
     )
             : UserDetailsDTO? {
         try {
             val user = User()
-            user.username = username
+            user.username = username.replace("\"","")
             user.password = passwordEncoder.encode(password)
-            user.email = email
+            user.email = email.replace("\"","")
             if (isEnabled != null) {
                 user.isEnabled = isEnabled
             }
@@ -57,6 +65,17 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
 
             //Save user details
             val repository = userRepository.save(user)
+
+            addCustomer( CustomerDTO(
+                name = name,
+                surname = surname,
+                deliveryAddress = address,
+                email = email,
+                user = repository
+
+
+
+            ) )
 
             //Save verification token
             var token : UUID? = notificationService.saveToken(username)
@@ -88,6 +107,15 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
             ex.printStackTrace()
         }
     }
+
+    override fun addCustomer(customerDTO: CustomerDTO){
+
+        customerRepository.save(customerDTO.toCustomerEntity())
+
+
+    }
+
+
 
 
     override fun addUserRole(username: String, role: RoleNames) {

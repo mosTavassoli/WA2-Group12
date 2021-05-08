@@ -27,7 +27,6 @@ class MailServiceImpl(  ) : MailService {
         try{
 
             mailSender.send(message)
-            println("Mail sent")
 
         } catch ( ex: Exception ){
             throw ex

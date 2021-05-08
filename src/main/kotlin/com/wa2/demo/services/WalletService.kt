@@ -1,6 +1,5 @@
 package com.wa2.demo.services
 
-import com.wa2.demo.dto.CustomerDTO
 import com.wa2.demo.dto.WalletDTO
 
 

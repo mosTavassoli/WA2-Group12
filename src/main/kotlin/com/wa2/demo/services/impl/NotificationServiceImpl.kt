@@ -24,7 +24,8 @@ class NotificationServiceImpl : NotificationService {
 
         var emailVerificationToken : EmailVerificationToken = EmailVerificationToken()
 
-        emailVerificationToken.username= username
+
+        emailVerificationToken.username= username.replace( "\"" , "" )
         var token : UUID = UUID.randomUUID()
         emailVerificationToken.token = token.toString()
         emailVerificationToken.expirationTimestamp = Date()
@@ -32,7 +33,6 @@ class NotificationServiceImpl : NotificationService {
 
 
 
-        println("Saving token ${token} ")
 
         emailVerificationTokenRepository.save(emailVerificationToken)
 
@@ -44,13 +44,10 @@ class NotificationServiceImpl : NotificationService {
 
     override fun verifyToken(token: UUID) : String? {
 
-        println("Before query")
-        println("Find row with token" + token)
         emailVerificationToken = emailVerificationTokenRepository.findEmailVerificationTokenByToken(token.toString())
 
         if(emailVerificationToken == null){
 
-            println("Query result is null")
             return null
 
         }
@@ -66,13 +63,15 @@ class NotificationServiceImpl : NotificationService {
         differenceBetweenDates = ((abs(expiration.time - today.time)) / (1000 * 60))
 
 
-        println("Difference: " +  differenceBetweenDates)
-//        println( "Difference: " +  (Date().time - dateFormatter.parse(emailVerificationToken.expirationTimestamp.toString()) )  )
 
 
         if(differenceBetweenDates!! < Constants.ExpiryTimeInMinutes){
 
+
+
             return emailVerificationToken!!.username
+
+
 
         }
         else
