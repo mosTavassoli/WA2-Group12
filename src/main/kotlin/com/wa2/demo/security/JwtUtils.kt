@@ -30,21 +30,25 @@ class JwtUtils {
     @Value("\${application.jwt.jwtExpirationMs}")
     lateinit var expirationTime: String
 
+
     @Autowired
     lateinit var userRepository: UserRepository
 
 
-    private fun getSigningKey(): Key? {
-        val keyBytes = Decoders.BASE64.decode(jwtSecret)
-        return Keys.hmacShaKeyFor(keyBytes)
-    }
+//    private fun getSigningKey(): Key? {
+//        val keyBytes = Decoders.BASE64.decode(jwtSecret)
+//        return Keys.hmacShaKeyFor(keyBytes)
+//    }
 
     fun generateJwtToken(authentication: Authentication): String {
         val userPrincipal: UserDetailsDTO = authentication.principal as UserDetailsDTO
         return Jwts.builder()
-            .setIssuer(userPrincipal.username)
+            .setIssuer(userPrincipal.userId.toString())
+            .claim("roles", userPrincipal.roles)
+            .setHeaderParam("typ", "JWT")
+            .setIssuedAt(Date())
             .setExpiration(Date(System.currentTimeMillis() + expirationTime.toLong()))
-            .signWith( getSigningKey())
+            .signWith( SignatureAlgorithm.HS256,jwtSecret)
             .compact()
     }
 
@@ -69,9 +73,9 @@ class JwtUtils {
     fun getDetailsFromJwtToken(authToken: String): UserDetailsDTO? {
         val getDetailsFromJwtToken =
             Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(authToken)
-        val userDetailsDTO = userRepository.findByUsername(getDetailsFromJwtToken.body["iss"].toString())?.toUserDetailsDTO()
+        val userDetailsDTO = userRepository.findByUsername(getDetailsFromJwtToken.body["sub"].toString())?.toUserDetailsDTO()
 //        userDetailsDTO._username = getDetailsFromJwtToken.body["iss"].toString()
-        if (userDetailsDTO?.roles?.contains("ADMIN") == true) AuthorityUtils.createAuthorityList("ROLE_ADMIN")
+//        if (userDetailsDTO?.roles?.contains("ADMIN") == true) AuthorityUtils.createAuthorityList("ROLE_ADMIN")
         return userDetailsDTO
     }
 }

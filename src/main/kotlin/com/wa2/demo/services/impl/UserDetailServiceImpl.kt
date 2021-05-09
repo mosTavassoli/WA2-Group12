@@ -39,6 +39,7 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
     @Autowired
     lateinit var customerRepository: CustomerRepository
 
+
     override fun addUser(
         username: String,
         password: String,
@@ -71,7 +72,7 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
                 name = name,
                 surname = surname,
                 deliveryAddress = address,
-                email = email,
+                email = email.replace("\"",""),
                 user = repository.toUserDTO()
 
 
@@ -99,13 +100,28 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
     override fun verifyToken(token: UUID) {
         try{
             var username : String? = notificationService.verifyToken(token)
-            if(username != null )
+            if(username != null ){
                 enableUser(username)
+                updateCustomerUserId(username)
+            }
+
+
             else
                 throw Exception("Token not found!")
 
         }catch(ex: Exception){
             ex.printStackTrace()
+        }
+    }
+
+    private fun updateCustomerUserId(username: String) {
+        try{
+            val user = userRepository.findByUsername(username)
+            val customer = customerRepository.findByEmail(user?.email!!)
+            customer.user = user
+            customerRepository.save(customer)
+        }catch (ex:Exception){
+            throw ex
         }
     }
 
@@ -145,8 +161,8 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
         }
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
-    @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ADMIN')")
+//    @Secured("ROLE_ADMIN")
     override fun enableUser(username: String) {
         try {
             val user = userRepository.findByUsername(username)

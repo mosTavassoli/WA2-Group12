@@ -12,6 +12,7 @@ import com.wa2.demo.services.UserDetailsService
 import com.wa2.demo.utils.Constants
 import com.wa2.demo.utils.RoleNames
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -21,6 +22,8 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import java.util.*
+import javax.servlet.http.Cookie
+import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
 
@@ -38,6 +41,12 @@ class AuthenticationController {
 
     @Autowired
     lateinit var userRepository: UserRepository
+
+    @Value("\${application.jwt.jwtHeader}")
+    lateinit var jwtHeader: String
+
+    @Value("\${application.jwt.jwtHeaderStart}")
+    lateinit var jwtHeaderStart: String
 
 
     @PostMapping(Constants.REGISTER)
@@ -70,6 +79,7 @@ class AuthenticationController {
 
     @PostMapping(Constants.SIGN_IN)
     fun authenticateUser(
+        response: HttpServletResponse,
         @RequestBody @Valid loginDTO: LoginDTO,
         bindingResult: BindingResult,
     ): ResponseEntity<String>? {
@@ -88,7 +98,11 @@ class AuthenticationController {
 //                println("authorities: ${authentication.authorities}")
                 val jwt: String = jwtUtils.generateJwtToken(authentication)
 //                println("$jwt")
-                return ResponseEntity(Gson().toJson(jwt), HttpStatus.OK)
+                val cookie= Cookie("jwt",jwt)
+                cookie.isHttpOnly = true
+                response.addCookie(cookie)
+                response.addHeader(jwtHeader,jwtHeaderStart + jwt)
+                return ResponseEntity.ok("success")
             } else {
                 ResponseEntity<String>("The User is not enabled!", HttpStatus.BAD_REQUEST)
             }
