@@ -3,6 +3,7 @@ package com.wa2.demo.services.impl
 import com.wa2.demo.domain.User
 import com.wa2.demo.dto.CustomerDTO
 import com.wa2.demo.dto.UserDetailsDTO
+import com.wa2.demo.dto.toUserDTO
 import com.wa2.demo.dto.toUserDetailsDTO
 import com.wa2.demo.repositories.CustomerRepository
 import com.wa2.demo.repositories.UserRepository
@@ -71,7 +72,7 @@ class UserDetailServiceImpl(val passwordEncoder: PasswordEncoder) : UserDetailsS
                 surname = surname,
                 deliveryAddress = address,
                 email = email,
-                user = repository
+                user = repository.toUserDTO()
 
 
 

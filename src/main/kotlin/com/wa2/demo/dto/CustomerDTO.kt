@@ -12,7 +12,7 @@ data class CustomerDTO(
     var deliveryAddress: String? = null,
     var email: String? = null,
     var wallets: MutableSet<WalletDTO> = mutableSetOf(),
-    var user: User? = null
+    var user: UserDTO? = null
 ) {
     fun toCustomerEntity(): Customer {
         val customer = Customer()
@@ -22,7 +22,6 @@ data class CustomerDTO(
         customer.name = name
         customer.surname = surname
         customer.wallets = wallets.map { a -> a.toWalletEntity() }.toMutableSet()
-        customer.user = user
         return customer
     }
 }
@@ -34,5 +33,5 @@ fun Customer.toCustomerDTO(): CustomerDTO = CustomerDTO(
     deliveryAddress,
     email,
     mutableSetOf(),
-    user
+    user?.toUserDTO()
 )
