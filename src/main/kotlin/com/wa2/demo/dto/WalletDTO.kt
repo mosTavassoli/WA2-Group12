@@ -14,7 +14,6 @@ data class WalletDTO(
     fun toWalletEntity(): Wallet {
         val wallet = Wallet()
         wallet.walletId = walletId
-        wallet.customer?.toCustomerDTO()
         wallet.currentAmount = currentAmount
         wallet.payees = payees.map { a -> a.toTransactionEntity() }.toMutableSet()
         wallet.payers = payers.map { a -> a.toTransactionEntity() }.toMutableSet()

@@ -1,5 +1,6 @@
 package com.wa2.demo.domain
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import javax.persistence.*
 
 @Entity
@@ -22,5 +23,10 @@ class Customer {
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, targetEntity = Wallet::class)
     lateinit var wallets: MutableSet<Wallet>
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @JoinColumn(name = "userId", referencedColumnName = "userId")
+    var user: User? = null
 }
 

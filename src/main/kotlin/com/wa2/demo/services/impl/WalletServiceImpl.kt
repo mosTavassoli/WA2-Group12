@@ -15,9 +15,12 @@ import java.math.BigDecimal
 @Service
 @Transactional
 class WalletServiceImpl(
-    @Autowired val walletRepository: WalletRepository,
-    @Autowired val customerRepository: CustomerRepository
+
 ) : WalletService {
+
+    @Autowired lateinit var walletRepository: WalletRepository
+    @Autowired lateinit var customerRepository: CustomerRepository
+
     override fun addNewWallet(customerId: Long): WalletDTO {
         try {
             val customerOp = customerRepository.findById(customerId)

@@ -1,9 +1,7 @@
 package com.wa2.demo.controllers
 
 import com.google.gson.*
-import com.wa2.demo.dto.TransactionDTO
-import com.wa2.demo.dto.WalletDTO
-import com.wa2.demo.dto.toTransactionDTO
+import com.wa2.demo.dto.*
 import com.wa2.demo.services.TransactionService
 import com.wa2.demo.services.WalletService
 import com.wa2.demo.utils.Constants
@@ -18,10 +16,13 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/wallet")
-class WalletController(
-    @Autowired val transactionService: TransactionService,
-    @Autowired val walletService: WalletService
-) {
+class WalletController {
+
+    @Autowired
+    lateinit var transactionService: TransactionService
+    @Autowired
+    lateinit var walletService: WalletService
+
 
     @PostMapping(Constants.CREATE_WALLET)
     fun createWallet(@RequestBody @Valid body: String): ResponseEntity<String> {
@@ -49,11 +50,11 @@ class WalletController(
     fun createTransaction(@PathVariable walletId: Long, @RequestBody body: String): ResponseEntity<String> {
         return try {
             val item: JsonObject = Gson().fromJson(body, JsonObject::class.java)
-            var payer = WalletDTO()
+            var payer: WalletDTO? = WalletDTO()
             var payee = WalletDTO()
             var transactionDTO = TransactionDTO()
             if (!item.get("payer").isJsonNull) {
-                payer = WalletDTO(item.get("payer").asLong)
+                payer = walletService.getWalletById(item.get("payer").asLong)
                 payee = WalletDTO(walletId)
                 transactionDTO = TransactionDTO(
                     null, payee, payer, Date(),
@@ -97,4 +98,6 @@ class WalletController(
             ResponseEntity<String>(ex.message.toString(), HttpStatus.BAD_REQUEST)
         }
     }
+
+
 }

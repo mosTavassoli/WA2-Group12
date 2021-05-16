@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface CustomerRepository : CrudRepository<Customer, Long>{
     fun findByCustomerId(customerId : Long): Customer
+    fun findByEmail(email : String) : Customer
 }
